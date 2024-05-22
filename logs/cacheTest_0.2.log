@@ -1,0 +1,32 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< org.example:research-2023-kmbr >-------------------
+[INFO] Building research-2023-kmbr 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.1.0:java (default-cli) @ research-2023-kmbr ---
+K: 20
+NUM_OF_POINTS: 100000
+
+(Without cache) Runtime: 14.213, MBR size: 0.1046324565230421
+(With cache) Runtime: 13.233, MBR size: 0.1046324565230421
+
+(Without cache) Runtime: 14.019, MBR size: 0.06810692089530335
+(With cache) Runtime: 13.897, MBR size: 0.06810692089530335
+
+(Without cache) Runtime: 12.801, MBR size: 0.06385339146979874
+(With cache) Runtime: 12.663, MBR size: 0.06385339146979874
+
+(Without cache) Runtime: 11.116, MBR size: 0.09512652470453276
+(With cache) Runtime: 10.977, MBR size: 0.09512652470453276
+
+(Without cache) Runtime: 13.538, MBR size: 0.0888606384818047
+(With cache) Runtime: 13.347, MBR size: 0.0888606384818047
+
+(Without cache) Runtime: 11.832, MBR size: 0.08262269700283298
+(With cache) Runtime: 11.414, MBR size: 0.08262269700283298
+
+(Without cache) Runtime: 13.145, MBR size: 0.08421943114474573
+(With cache) Runtime: 13.0, MBR size: 0.08421943114474573
+

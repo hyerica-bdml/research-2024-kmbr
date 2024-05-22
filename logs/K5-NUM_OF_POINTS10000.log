@@ -1,0 +1,46 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< org.example:research-2023-kmbr >-------------------
+[INFO] Building research-2023-kmbr 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.1.0:java (default-cli) @ research-2023-kmbr ---
+K: 5
+NUM_OF_POINTS: 10000
+
+(Without cache) Runtime: 0.055, MBR size: 0.10318073750646306
+(With cache) Runtime: 0.001, MBR size: 0.10318073750646306
+
+(Without cache) Runtime: 0.031, MBR size: 0.02540141223721548
+(With cache) Runtime: 0.001, MBR size: 0.02540141223721548
+
+(Without cache) Runtime: 0.046, MBR size: 0.05577564551702352
+(With cache) Runtime: 0.001, MBR size: 0.05577564551702352
+
+(Without cache) Runtime: 0.034, MBR size: 0.05569501794411735
+(With cache) Runtime: 0.001, MBR size: 0.05569501794411735
+
+(Without cache) Runtime: 0.035, MBR size: 0.03229010196983495
+(With cache) Runtime: 0.002, MBR size: 0.03229010196983495
+
+(Without cache) Runtime: 0.024, MBR size: 0.058179580907186335
+(With cache) Runtime: 0.001, MBR size: 0.058179580907186335
+
+(Without cache) Runtime: 0.023, MBR size: 0.033253742609957726
+(With cache) Runtime: 0.0, MBR size: 0.033253742609957726
+
+(Without cache) Runtime: 0.018, MBR size: 0.07038359444358377
+(With cache) Runtime: 0.001, MBR size: 0.07038359444358377
+
+(Without cache) Runtime: 0.018, MBR size: 0.13798819235307747
+(With cache) Runtime: 0.0, MBR size: 0.13798819235307747
+
+(Without cache) Runtime: 0.018, MBR size: 0.05410531326189272
+(With cache) Runtime: 0.001, MBR size: 0.05410531326189272
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.738 s
+[INFO] Finished at: 2023-06-25T15:22:18+09:00
+[INFO] ------------------------------------------------------------------------

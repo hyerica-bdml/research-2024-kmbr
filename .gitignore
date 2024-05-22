@@ -1,0 +1,7 @@
+.idea/
+data/
+**/~$*.*
+**/*.swp
+**/.DS_store
+target/
+**/.ipynb_checkpoints/
