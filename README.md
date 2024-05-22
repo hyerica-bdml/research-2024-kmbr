@@ -70,7 +70,7 @@ INPUT> exit # 종료
 3. `python/visualize_simulation.py` 실행 (`cd python && python visualize_simulation.py`). 이 과정에서 `python/kmbr.gif` 파일이 생성됨
 
 Example:
-<img src="python/kmbr.gif" width=600>
+<img src="python/kmbr.gif" width=1000>
 
 ### Speed test mode
 1. Intellij project explorer에서 `src/main/java/edu/hanyang/kmbr/SpeedTestApp.java` 파일 마우스 오른쪽 버튼 클릭
