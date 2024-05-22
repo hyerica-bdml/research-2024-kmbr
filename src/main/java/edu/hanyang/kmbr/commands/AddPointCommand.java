@@ -2,6 +2,7 @@ package edu.hanyang.kmbr.commands;
 
 import edu.hanyang.kmbr.KMBRInteractor;
 import edu.hanyang.kmbr.database.DatabaseInteractor;
+import edu.hanyang.kmbr.domain.ClusterAssignment;
 import edu.hanyang.kmbr.domain.Point;
 
 public class AddPointCommand implements Command {
@@ -23,7 +24,7 @@ public class AddPointCommand implements Command {
 
     @Override
     public void execute() {
-        Point point = db.newPoint(x, y);
-        kmbr.addPoint(point);
+        ClusterAssignment assignment = db.newPoint(x, y);
+        kmbr.addPoint(assignment.getPoint());
     }
 }

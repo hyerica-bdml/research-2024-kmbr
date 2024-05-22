@@ -14,24 +14,19 @@ import java.util.stream.Collectors;
 
 public class MoveCommand implements Command {
 
-    private final int minMove, maxMove, numOfClusters;
-    private KMBRApp app;
+    private final int minMove, maxMove;
     private final KMBRInteractor kmbr;
     private final DatabaseInteractor db;
 
-    public MoveCommand(final KMBRApp app,
-                       final KMBRInteractor kmbr,
+    public MoveCommand(final KMBRInteractor kmbr,
                        final DatabaseInteractor db,
                        final int minMove,
-                       final int maxMove,
-                       final int numOfClusters) {
+                       final int maxMove) {
 
-        this.app = app;
         this.kmbr = kmbr;
         this.db = db;
         this.minMove = minMove;
         this.maxMove = maxMove;
-        this.numOfClusters = numOfClusters;
     }
 
     @Override
@@ -41,18 +36,18 @@ public class MoveCommand implements Command {
 
     public void moveRandomPoints() {
 
-        Point[] points = db.getPoints();
-        double[] clusterProbs = db.getRandomClusterProbs(this.numOfClusters);
+        ClusterAssignment[] points = db.getPoints();
+        double[] clusterProbs = db.getRandomClusterProbs(db.getClusterIndices().size());
 
         Random random = new Random(System.currentTimeMillis());
         int move = random.nextInt(maxMove - minMove) + minMove;
 
         for (int i = 0; i < move; i++) {
             int clusterIndex = getRandomClusterIndex(clusterProbs, random);
-            Point p = sampleByClusterIndex(clusterIndex, random).getPoint();
+            ClusterAssignment p = sampleByClusterIndex(clusterIndex, random);
 
-            double x = p.getX() + random.nextGaussian() / points.length * 10.0;
-            double y = p.getY() + random.nextGaussian() / points.length * 10.0;
+            double x = p.getPoint().getX() + random.nextGaussian() / points.length * 10.0;
+            double y = p.getPoint().getY() + random.nextGaussian() / points.length * 10.0;
 
 //            System.out.println("POINT MOVE " + p.getId() + ": " + p.getX());
             movePoint(p, x, y);
@@ -69,17 +64,13 @@ public class MoveCommand implements Command {
         return clusterCDF.length - 1;
     }
 
-    public void movePoint(final Point p, final double x, final double y) {
-        kmbr.movePoint(p, x, y);
+    public void movePoint(final ClusterAssignment p, final double x, final double y) {
+        kmbr.movePoint(p.getPoint(), x, y);
     }
 
     public ClusterAssignment sampleByClusterIndex(final int clusterIndex, final Random random) {
-        List<ClusterAssignment> filteredList = filterClusterAssignments(clusterIndex);
-        int randomIndex = random.nextInt(filteredList.size());
-        return filteredList.get(randomIndex);
-    }
-
-    public List<ClusterAssignment> filterClusterAssignments(final int clusterIndex) {
-        return app.getPoints().stream().filter(p -> p.getClusterIndex() == clusterIndex).collect(Collectors.toList());
+        ClusterAssignment[] filteredList = db.getPointsByClusterIndex(clusterIndex);
+        int randomIndex = random.nextInt(filteredList.length);
+        return filteredList[randomIndex];
     }
 }

@@ -1,12 +1,12 @@
 package edu.hanyang.kmbr.database;
 
 import edu.hanyang.kmbr.domain.ClusterAssignment;
+import edu.hanyang.kmbr.domain.Coordinate;
 import edu.hanyang.kmbr.domain.Point;
+import edu.hanyang.kmbr.domain.PointUtilities;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class PointFactory {
 
@@ -16,30 +16,52 @@ public class PointFactory {
         this.db = db;
     }
 
-    public Point newPoint(final double x, final double y) {
+    public ClusterAssignment newPoint(final double x, final double y, final int clusterIndex) {
         long newId = db.getMaxPointId() + 1;
         Point p = new Point(newId, x, y);
-        db.addPoint(p);
-        return p;
+        ClusterAssignment a = new ClusterAssignment(clusterIndex, p);
+        db.addPoint(a);
+        return a;
     }
 
-    public Point[] readPointsFromFile(final String dataPath) {
+    public ClusterAssignment newPoint(final double x, final double y) {
+        long newId = db.getMaxPointId() + 1;
+        Point p = new Point(newId, x, y);
+
+        int optimalClusterIndex = -1;
+        double optimalDistance = 99999999;
+        for (int clusterIndex: db.getClusterIndices()) {
+            Coordinate mean = db.getClusterMeanByIndex(clusterIndex);
+            double std = db.getClusterStd(clusterIndex);
+
+            double dist = PointUtilities.computeDistance(p, mean, std);
+            if (dist < optimalDistance) {
+                optimalDistance = dist;
+                optimalClusterIndex = clusterIndex;
+            }
+        }
+        ClusterAssignment assignment = new ClusterAssignment(optimalClusterIndex, p);
+        db.addPoint(assignment);
+        return assignment;
+    }
+
+    public ClusterAssignment[] readPointsFromFile(final String dataPath) {
         try (FileReader freader = new FileReader(dataPath);
              BufferedReader reader = new BufferedReader(freader, 8192)) {
 
             final int numOfPoints = Integer.parseInt(reader.readLine().strip());
 
-            Point[] points = new Point[numOfPoints];
+            ClusterAssignment[] points = new ClusterAssignment[numOfPoints];
 
             for (int i = 0; i < numOfPoints; i += 1) {
                 String line = reader.readLine();
                 String[] splited = line.split(" ");
 
-                int cluster_index = Integer.parseInt(splited[0]);
+                int clusterIndex = Integer.parseInt(splited[0]);
                 double x = Double.parseDouble(splited[1]);
                 double y = Double.parseDouble(splited[2]);
 
-                points[i] = newPoint(x, y);
+                points[i] = newPoint(x, y, clusterIndex);
             }
 
             return points;
@@ -55,6 +77,7 @@ public class PointFactory {
                                                     final double[] stdLimits,
                                                     final double[] clusterProbs) {
 
+//        ClusterAssignment[] points = new ClusterAssignment[numOfPoints];
         ClusterAssignment[] points = new ClusterAssignment[numOfPoints];
         Random random = new Random(System.currentTimeMillis());
 
@@ -63,12 +86,18 @@ public class PointFactory {
             numOfPointsPerCluster[i] = (int) Math.ceil(numOfPoints * clusterProbs[i]);
         }
 
+        Map<Integer, Coordinate> clusterMean = new HashMap<>();
+        Map<Integer, Double> clusterStd = new HashMap<>();
+
         int startIndex = 0;
         outerLoop: for (int c = 0; c < clusterProbs.length; c++) {
 
             double clusterX = random.nextDouble() * (xLimits[1] - xLimits[0]) + xLimits[0];
             double clusterY = random.nextDouble() * (yLimits[1] - yLimits[0]) + yLimits[0];
             double std = random.nextDouble() * (stdLimits[1] - stdLimits[0]) + stdLimits[0];
+
+            clusterMean.put(c, new Coordinate(clusterX, clusterY));
+            clusterStd.put(c, std);
 
             for (int i = 0; i < numOfPointsPerCluster[c]; i++) {
                 if (i + startIndex == numOfPoints) break outerLoop;
@@ -82,13 +111,51 @@ public class PointFactory {
 //                if (y > clusterY + 3*std) y = clusterY + 3*std;
 //                else if (y < clusterY - 3*std) y = clusterY - 3*std;
 
-                Point p = newPoint(x, y);
-                points[startIndex + i] = new ClusterAssignment(c, p);
+                points[startIndex + i] = newPoint(x, y, c);
             }
 
             startIndex += numOfPointsPerCluster[c];
         }
-        System.out.println();
+//        System.out.println();
+        db.updateClusterStats(clusterMean, clusterStd);
+
+        return points;
+    }
+
+    public ClusterAssignment[] generateRandomPoints(final int numOfPoints,
+                                                    final Map<Integer, Coordinate> clusterMean,
+                                                    final Map<Integer, Double> clusterStd,
+                                                    final double[] clusterProbs) {
+
+//        ClusterAssignment[] points = new ClusterAssignment[numOfPoints];
+        ClusterAssignment[] points = new ClusterAssignment[numOfPoints];
+        Random random = new Random(System.currentTimeMillis());
+
+        int[] numOfPointsPerCluster = new int[clusterProbs.length];
+        for (int i = 0; i < clusterProbs.length; i += 1) {
+            numOfPointsPerCluster[i] = (int) Math.ceil(numOfPoints * clusterProbs[i]);
+        }
+
+        int startIndex = 0;
+        outerLoop: for (int c: db.getClusterIndices()) {
+
+            double clusterX = clusterMean.get(c).getX();
+            double clusterY = clusterMean.get(c).getY();
+            double std = clusterStd.get(c);
+
+            for (int i = 0; i < numOfPointsPerCluster[c]; i++) {
+                if (i + startIndex == numOfPoints) break outerLoop;
+
+                double x = random.nextGaussian() * std + clusterX;
+                double y = random.nextGaussian() * std + clusterY;
+
+                points[startIndex + i] = newPoint(x, y, c);
+            }
+
+            startIndex += numOfPointsPerCluster[c];
+        }
+//        System.out.println();
+        db.updateClusterStats(clusterMean, clusterStd);
 
         return points;
     }

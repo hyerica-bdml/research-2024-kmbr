@@ -1,6 +1,7 @@
 package edu.hanyang.kmbr;
 
 import edu.hanyang.kmbr.database.DatabaseInteractor;
+import edu.hanyang.kmbr.domain.ClusterAssignment;
 import edu.hanyang.kmbr.domain.Point;
 
 import java.io.*;
@@ -50,7 +51,6 @@ public class CitibikeSimulationApp {
 
         if (Config.useCache)
             kmbr.updateCacheBits();
-
 
         for (int i = 0; i < 10; i += 1) {
             long startTime = System.currentTimeMillis();
@@ -108,7 +108,7 @@ public class CitibikeSimulationApp {
     }
 
     public Point[] readInitialPoints(final String csvFilePath) {
-        List<Point> points = new LinkedList<>();
+        List<ClusterAssignment> assignments = new LinkedList<>();
 
         try (FileReader fin = new FileReader(csvFilePath);
              BufferedReader bin = new BufferedReader(fin)) {
@@ -121,8 +121,8 @@ public class CitibikeSimulationApp {
                     double x = Double.parseDouble(split[2]);
                     double y = Double.parseDouble(split[3]);
 
-                    Point p = db.newPoint(x, y);
-                    points.add(p);
+                    ClusterAssignment p = db.newPoint(x, y, 0);
+                    assignments.add(p);
                 }
                 else {
                     break;
@@ -132,8 +132,10 @@ public class CitibikeSimulationApp {
             exc.printStackTrace();
         }
 
-        Point[] arr = new Point[points.size()];
-        points.toArray(arr);
+        Point[] arr = new Point[assignments.size()];
+        for (int i = 0; i < arr.length; i += 1) {
+            arr[i] = assignments.get(i).getPoint();
+        }
         return arr;
     }
 }

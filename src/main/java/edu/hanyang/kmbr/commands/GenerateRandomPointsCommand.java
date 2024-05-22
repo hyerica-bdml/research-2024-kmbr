@@ -8,24 +8,21 @@ import edu.hanyang.kmbr.domain.Point;
 
 public class GenerateRandomPointsCommand implements Command {
 
-    private final KMBRApp app;
-    private final DatabaseInteractor db;
     private final KMBRInteractor kmbr;
+    private final DatabaseInteractor db;
 
     private final int numOfPoints, numOfClusters;
-    private double[] xLimits, yLimits, stdLimits;
+    private final double[] xLimits, yLimits, stdLimits;
     private final boolean clear;
 
-    public GenerateRandomPointsCommand(final KMBRApp app,
+    public GenerateRandomPointsCommand(final KMBRInteractor kmbr,
                                        final DatabaseInteractor db,
-                                       final KMBRInteractor kmbr,
                                        final int numOfPoints,
                                        final int numOfClusters,
                                        final double[] xLimits,
                                        final double[] yLimits,
                                        final double[] stdLimits,
                                        final boolean clear) {
-        this.app = app;
         this.db = db;
         this.kmbr = kmbr;
 
@@ -39,12 +36,10 @@ public class GenerateRandomPointsCommand implements Command {
 
     @Override
     public void execute() {
-        ClusterAssignment[] clusterAssignments = db.generateRandomPoints(numOfPoints, numOfClusters, xLimits, yLimits, stdLimits);
-        app.addClusterAssignments(clusterAssignments);
-        Point[] points = new Point[clusterAssignments.length];
-
-        for (int i = 0; i < points.length; i += 1) {
-            points[i] = clusterAssignments[i].getPoint();
+        ClusterAssignment[] assignments = db.generateRandomPoints(numOfPoints, numOfClusters, xLimits, yLimits, stdLimits);
+        Point[] points = new Point[assignments.length];
+        for (int i = 0; i < assignments.length; i += 1) {
+            points[i] = assignments[i].getPoint();
         }
 
         if (clear) {

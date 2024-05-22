@@ -46,7 +46,7 @@ public class GridShiftApp {
 
         double[] pointGenerationClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
 
-        ClusterAssignment[] clusterAssignments = db.generateRandomPoints(
+        ClusterAssignment[] points = db.generateRandomPoints(
                 NUM_OF_POINTS,
                 NUM_OF_GROUPS,
                 xLimits,
@@ -85,7 +85,7 @@ public class GridShiftApp {
 //                int minMove = 500;
 //                int maxMove = 501;
 //                moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
-                gs = new GridShift(clusterAssignments, 1, 0, 70, 0, 70);
+                gs = new GridShift(points, 1, 0, 70, 0, 70);
 
                 long startTime = System.currentTimeMillis();
                 gs.run();

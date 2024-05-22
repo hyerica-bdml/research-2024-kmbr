@@ -9,19 +9,19 @@ import java.util.*;
 
 public class GridShift {
 
-    private ClusterAssignment[] clusterAssignments;
+    private ClusterAssignment[] assignments;
     private double gridSize;
     private Map<KeyTuple, Grid> grids;
 
 
-    public GridShift(final ClusterAssignment[] clusterAssignments,
-                   final double gridSize,
-                   final double x_lower,
-                   final double x_upper,
-                   final double y_lower,
-                   final double y_upper) {
+    public GridShift(final ClusterAssignment[] assignments,
+                     final double gridSize,
+                     final double x_lower,
+                     final double x_upper,
+                     final double y_lower,
+                     final double y_upper) {
 
-        this.clusterAssignments = clusterAssignments;
+        this.assignments = assignments;
         this.gridSize = gridSize;
 
         grids = new HashMap<>();
@@ -117,8 +117,8 @@ public class GridShift {
 
             grid.getPoints().clear();
 
-            for (ClusterAssignment c: clusterAssignments) {
-                Point p = c.getPoint();
+            for (ClusterAssignment assignment: assignments) {
+                Point p = assignment.getPoint();
 //                System.out.println(p);
 
                 if (p.getX() >= x - gridSize/2 && p.getX() <= x + gridSize/2 &&
@@ -131,10 +131,10 @@ public class GridShift {
     }
 
     public void updateMembership(Grid grid) {
-        Point[] points = new Point[clusterAssignments.length];
-        for (int k = 0; k < clusterAssignments.length; k += 1)
-            points[k] = clusterAssignments[k].getPoint();
-
+        Point[] points = new Point[assignments.length];
+        for (int i = 0; i < assignments.length; i += 1) {
+            points[i] = assignments[i].getPoint();
+        }
         grid.update(points);
     }
 

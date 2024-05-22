@@ -8,13 +8,12 @@ import java.io.ObjectOutput;
 public class Point implements Externalizable {
 
     private static final long serialVersionUID = 8447430827315054366L;
-    private double x, y;
+    private Coordinate coordinate;
     private long id;
 
-    public Point(long id, double x, double y) {
+    public Point(final long id, final double x, final double y) {
         this.id = id;
-        this.x = x;
-        this.y = y;
+        this.coordinate = new Coordinate(x, y);
     }
     public Point() {}
 
@@ -23,15 +22,14 @@ public class Point implements Externalizable {
     }
 
     public double getX() {
-        return x;
+        return coordinate.getX();
     }
     public double getY() {
-        return y;
+        return coordinate.getY();
     }
 
     public void set(final double x, final double y) {
-        this.x = x;
-        this.y = y;
+        coordinate.set(x, y);
     }
 
     @Override
@@ -45,20 +43,18 @@ public class Point implements Externalizable {
 
     @Override
     public String toString() {
-        return "(" + id + ", " + x + ", " + y + ")";
+        return "(" + id + ", " + coordinate.getX() + ", " + coordinate.getY() + ")";
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong(id);
-        out.writeDouble(x);
-        out.writeDouble(y);
+        out.writeObject(coordinate);
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.id = in.readLong();
-        this.x = in.readDouble();
-        this.y = in.readDouble();
+        this.coordinate = (Coordinate) in.readObject();
     }
 }
