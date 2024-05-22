@@ -1,7 +1,9 @@
 .idea/
 data/
+target/
+python/simulation/*.jpg
+**/*.gif
 **/~$*.*
 **/*.swp
 **/.DS_store
-target/
 **/.ipynb_checkpoints/
