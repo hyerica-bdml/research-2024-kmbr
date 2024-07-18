@@ -40,16 +40,16 @@ public class DistanceMatrix {
         sortedPoints.remove(point);
     }
 
-//    public DistanceMatrix duplicate() {
-//        DistanceMatrix newMat = new DistanceMatrix();
-//        newMat.sortedPoints = new LinkedList<>(sortedPoints);
-//        newMat.sortType = sortType;
-//        newMat.distanceMat = new LinkedList<>(distanceMat);
-//        for (int i = 0; i < distanceMat.size(); i += 1)
-//            newMat.distanceMat.set(i, new LinkedList<>(distanceMat.get(i)));
-//
-//        return newMat;
-//    }
+    public DistanceMatrix duplicate() {
+        DistanceMatrix newMat = new DistanceMatrix();
+        newMat.sortedPoints = new LinkedList<>(sortedPoints);
+        newMat.sortType = sortType;
+        newMat.distanceMat = new LinkedList<>(distanceMat);
+        for (int i = 0; i < distanceMat.size(); i += 1)
+            newMat.distanceMat.set(i, new LinkedList<>(distanceMat.get(i)));
+
+        return newMat;
+    }
 
     public List<ClusterAssignment> get() {
         double minDist = Double.MAX_VALUE;

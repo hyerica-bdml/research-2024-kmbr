@@ -20,10 +20,10 @@ public class Smallest2019Test {
     public void baseAlgorithmTest() {
         DatabaseInteractor db = DatabaseInteractor.getInstance();
 //        Random random = new Random(40);
-        Random random = new Random(34);
+        Random random = new Random(116);
 
         List<ClusterAssignment> points = new LinkedList<>();
-        for (int i = 0; i < 50; i += 1) {
+        for (int i = 0; i < 100; i += 1) {
 //            points.add(new ClusterAssignment(i, new Point(i, Math.pow(2, i), i+1)));
             points.add(new ClusterAssignment(i, new Point(i, random.nextDouble(), random.nextDouble())));
         }
@@ -51,9 +51,11 @@ public class Smallest2019Test {
 //            System.out.print(gt.getPoints()[i].getId() + " ");
 //        System.out.println();
         double trueSize = gt.size();
-        savePoints(points, estimated.getPoints(), Arrays.asList(gt.getPoints()));
+//        savePoints(points, estimated.getPoints(), Arrays.asList(gt.getPoints()));
 
 //        Assert.assertEquals(gt.getArea(), estimated.getArea(), 0.0001);
+        System.out.println("Estimated: " + estimatedSize);
+        System.out.println("True: " + trueSize);
         Assert.assertEquals(trueSize, estimatedSize, 0.0001);
     }
 
