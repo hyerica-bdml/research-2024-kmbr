@@ -8,8 +8,6 @@ import edu.hanyang.kmbr.utils.Utilities;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -28,7 +26,7 @@ public class Smallest2019Test {
             points.add(new ClusterAssignment(i, new Point(i, random.nextDouble(), random.nextDouble())));
         }
 
-        Smallest2019 method = new Smallest2019(points);
+        Smallest2019Basic method = new Smallest2019Basic(points);
         SmallestMBRResult estimated = method.find();
 //        for (int i = 0; i < estimated.getPoints().size(); i += 1)
 //            System.out.print(estimated.getPoints().get(i).getPoint().getId() + " ");
