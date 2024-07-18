@@ -10,8 +10,8 @@ import java.util.List;
 
 public class DistanceMatrix {
 
-    private final List<ClusterAssignment> sortedPoints;
-    private final SortType sortType;
+    private List<ClusterAssignment> sortedPoints;
+    private SortType sortType;
     private List<List<Double>> distanceMat;
 
     public DistanceMatrix(final List<ClusterAssignment> points, final SortType sortType) {
@@ -26,6 +26,8 @@ public class DistanceMatrix {
         computeDistanceMatrix();
     }
 
+    public DistanceMatrix() {}
+
     public void removePoint(final ClusterAssignment point) {
         int index = sortedPoints.indexOf(point);
         if (index == -1) return;
@@ -38,6 +40,17 @@ public class DistanceMatrix {
         sortedPoints.remove(point);
     }
 
+//    public DistanceMatrix duplicate() {
+//        DistanceMatrix newMat = new DistanceMatrix();
+//        newMat.sortedPoints = new LinkedList<>(sortedPoints);
+//        newMat.sortType = sortType;
+//        newMat.distanceMat = new LinkedList<>(distanceMat);
+//        for (int i = 0; i < distanceMat.size(); i += 1)
+//            newMat.distanceMat.set(i, new LinkedList<>(distanceMat.get(i)));
+//
+//        return newMat;
+//    }
+
     public List<ClusterAssignment> get() {
         double minDist = Double.MAX_VALUE;
         int startIndex = -1;
@@ -45,7 +58,6 @@ public class DistanceMatrix {
 
         for (int i = 0; i < distanceMat.size() - (Config.K - 1); i += 1) {
             double tempDist = distanceMat.get(i).get(i + Config.K - 1);
-//            System.out.println(tempDist);
             if (minDist > tempDist) {
                 minDist = tempDist;
                 startIndex = i;
@@ -55,6 +67,28 @@ public class DistanceMatrix {
 
         return sortedPoints.subList(startIndex, endIndex);
     }
+
+//    public List<ClusterAssignment> get() {
+//        double minDist = Double.MAX_VALUE;
+//        int startIndex = -1;
+//        int endIndex = -1;
+//
+//        for (int i = 0; i < sortedPoints.size() - (Config.K - 1); i += 1) {
+//            double tempDist;
+//            if (sortType == SortType.X)
+//                tempDist = sortedPoints.get(i + Config.K - 1).getPoint().getX() - sortedPoints.get(i).getPoint().getX();
+//            else
+//                tempDist = sortedPoints.get(i + Config.K - 1).getPoint().getY() - sortedPoints.get(i).getPoint().getY();
+//
+//            if (minDist > tempDist) {
+//                minDist = tempDist;
+//                startIndex = i;
+//                endIndex = startIndex + Config.K;
+//            }
+//        }
+//
+//        return sortedPoints.subList(startIndex, endIndex);
+//    }
 
     public void print() {
         for (int i = 0; i < distanceMat.size(); i += 1) {
