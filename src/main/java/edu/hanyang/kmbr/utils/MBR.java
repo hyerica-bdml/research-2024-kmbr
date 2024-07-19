@@ -13,7 +13,7 @@ import java.util.List;
 public class MBR implements Externalizable {
 
     private static final long serialVersionUID = -3415961007337923126L;
-    public Point[] Points;
+    public Point[] points;
     public int index;
 
     public int minXPointIndex;
@@ -22,7 +22,7 @@ public class MBR implements Externalizable {
     public int maxYPointIndex;
 
     public MBR() {
-        Points = new Point[Config.K];
+        points = new Point[Config.K];
         index = 0;
 
         minXPointIndex = -1;
@@ -35,8 +35,8 @@ public class MBR implements Externalizable {
         this();
 
         for (Point p: Points) {
-            if (index < this.Points.length)
-                this.Points[index++] = p;
+            if (index < this.points.length)
+                this.points[index++] = p;
         }
         updateBoundaryPoints();
     }
@@ -47,8 +47,8 @@ public class MBR implements Externalizable {
         for (Point p: Points) {
             if (p == null) break;
 
-            if (index < this.Points.length)
-                this.Points[index++] = p;
+            if (index < this.points.length)
+                this.points[index++] = p;
         }
         updateBoundaryPoints();
     }
@@ -57,14 +57,28 @@ public class MBR implements Externalizable {
         double xLen = 0, yLen = 0;
 
         try {
-            xLen = Points[maxXPointIndex].getX() - Points[minXPointIndex].getX();
-            yLen = Points[maxYPointIndex].getY() - Points[minYPointIndex].getY();
+            xLen = points[maxXPointIndex].getX() - points[minXPointIndex].getX();
+            yLen = points[maxYPointIndex].getY() - points[minYPointIndex].getY();
         } catch (NullPointerException exc) {
             System.out.println(index);
             System.out.println(xLen + ", " + yLen);
             throw exc;
         }
         return (xLen + yLen)*2;
+    }
+
+    public double getArea() {
+        double xLen = 0, yLen = 0;
+
+        try {
+            xLen = points[maxXPointIndex].getX() - points[minXPointIndex].getX();
+            yLen = points[maxYPointIndex].getY() - points[minYPointIndex].getY();
+        } catch (NullPointerException exc) {
+            System.out.println(index);
+            System.out.println(xLen + ", " + yLen);
+            throw exc;
+        }
+        return xLen * yLen;
     }
 
     public long[] getPointIds() {
@@ -80,14 +94,14 @@ public class MBR implements Externalizable {
     }
 
     public Point[] getPoints() {
-        return Points;
+        return points;
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.index = in.readInt();
         for (int i = 0; i < index; i += 1) {
-            Points[i] = (Point) in.readObject();
+            points[i] = (Point) in.readObject();
         }
         minXPointIndex = in.readInt();
         maxXPointIndex = in.readInt();
@@ -99,7 +113,7 @@ public class MBR implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(index);
         for (int i = 0; i < index; i += 1) {
-            out.writeObject(Points[i]);
+            out.writeObject(points[i]);
         }
         out.writeInt(minXPointIndex);
         out.writeInt(maxXPointIndex);
@@ -114,13 +128,13 @@ public class MBR implements Externalizable {
         maxYPointIndex = 0;
 
         for (int i = 0; i < index; i += 1) {
-            if (Points[minXPointIndex].getX() > Points[i].getX())
+            if (points[minXPointIndex].getX() > points[i].getX())
                 minXPointIndex = i;
-            if (Points[minYPointIndex].getY() > Points[i].getY())
+            if (points[minYPointIndex].getY() > points[i].getY())
                 minYPointIndex = i;
-            if (Points[maxXPointIndex].getX() < Points[i].getX())
+            if (points[maxXPointIndex].getX() < points[i].getX())
                 maxXPointIndex = i;
-            if (Points[maxYPointIndex].getY() < Points[i].getY())
+            if (points[maxYPointIndex].getY() < points[i].getY())
                 maxYPointIndex = i;
         }
     }
