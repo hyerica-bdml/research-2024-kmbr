@@ -8,27 +8,25 @@ import edu.hanyang.kmbr.utils.Utilities;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.List;
 
-public class Smallest2019Test {
+public class Smallest2019BaseTest {
 
     @Test
-    public void algorithmTest() {
+    public void baseAlgorithmTest() {
         DatabaseInteractor db = DatabaseInteractor.getInstance();
 //        Random random = new Random(40);
-        Random random = new Random(87);
+        Random random = new Random(116);
 
         List<ClusterAssignment> points = new LinkedList<>();
-        for (int i = 0; i < 500; i += 1) {
+        for (int i = 0; i < 120; i += 1) {
 //            points.add(new ClusterAssignment(i, new Point(i, Math.pow(2, i), i+1)));
             points.add(new ClusterAssignment(i, new Point(i, random.nextDouble(), random.nextDouble())));
         }
 
-        Smallest2019 method = new Smallest2019(points);
-
+        Smallest2019Base method = new Smallest2019Base(points);
         long startTime = System.currentTimeMillis();
         SmallestMBRResult estimated = method.find();
         System.out.println("Algorithm runtime: " + (System.currentTimeMillis() - startTime) / 1000.0);

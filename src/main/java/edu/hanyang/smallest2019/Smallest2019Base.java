@@ -7,11 +7,11 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Smallest2019Basic {
+public class Smallest2019Base {
 
     private final List<ClusterAssignment> ySortedClusterAssignments;
 
-    public Smallest2019Basic(final List<ClusterAssignment> clusterAssignments) {
+    public Smallest2019Base(final List<ClusterAssignment> clusterAssignments) {
         ySortedClusterAssignments = new LinkedList<>(clusterAssignments);
         ySortedClusterAssignments.sort(Comparator.comparingDouble(c -> c.getPoint().getY()));
     }
