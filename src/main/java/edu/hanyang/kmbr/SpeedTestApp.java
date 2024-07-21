@@ -80,13 +80,13 @@ public class SpeedTestApp {
 //        kmbr.printCacheBits();
 //        kmbr.printDirtyProbs();
 
-        try (FileWriter fout = new FileWriter(String.format("logs/K%d_N%d_without_caching.csv", Config.K, Config.NUM_OF_POINTS));
+        try (FileWriter fout = new FileWriter(String.format("logs/K%d_N%d_without_caching.csv", Config.K, Config.NUM_OF_POINTS), true);
              BufferedWriter bout = new BufferedWriter(fout)) {
 
             long startTime = System.currentTimeMillis();
             MBR mbr = kmbr.find();
             double runtime = (System.currentTimeMillis() - startTime)/1000.0;
-            bout.write("" + runtime);
+            bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
             System.out.println("(Without cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
 
         } catch (IOException exc) {
@@ -98,12 +98,12 @@ public class SpeedTestApp {
         pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
         kmbr.updateCacheBits();
 
-        try (FileWriter fout = new FileWriter(String.format("logs/K%d_N%d_with_caching.csv", Config.K, Config.NUM_OF_POINTS));
+        try (FileWriter fout = new FileWriter(String.format("logs/K%d_N%d_with_caching.csv", Config.K, Config.NUM_OF_POINTS), true);
              BufferedWriter bout = new BufferedWriter(fout)) {
             long startTime = System.currentTimeMillis();
             MBR mbr = kmbr.find();
             double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
-            bout.write("" + runtime);
+            bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
             System.out.println("(With cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
         } catch (IOException exc) {
             exc.printStackTrace();
