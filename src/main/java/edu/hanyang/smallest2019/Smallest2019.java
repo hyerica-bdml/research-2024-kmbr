@@ -28,9 +28,9 @@ public class Smallest2019 {
 
             for (Rectangle rect: rectangles) {
                 Smallest2019Base basicAlgorithm = new Smallest2019Base(rect.getClusterAssignments());
-                long startTime = System.currentTimeMillis();
+//                long startTime = System.currentTimeMillis();
                 SmallestMBRResult temp = basicAlgorithm.find();
-                System.out.println("runtime of base algorithm: " + (System.currentTimeMillis() - startTime) / 1000.0);
+//                System.out.println("runtime of base algorithm: " + (System.currentTimeMillis() - startTime) / 1000.0);
                 if (result == null || result.size() > temp.size())
                     result = temp;
             }
@@ -47,9 +47,9 @@ public class Smallest2019 {
             return result;
         } else {
             Smallest2019Base basicAlgorithm = new Smallest2019Base(ySortedList);
-            long startTime = System.currentTimeMillis();
+//            long startTime = System.currentTimeMillis();
             SmallestMBRResult result = basicAlgorithm.find();
-            System.out.println("(else) runtime of base algorithm: " + (System.currentTimeMillis() - startTime) / 1000.0);
+//            System.out.println("(else) runtime of base algorithm: " + (System.currentTimeMillis() - startTime) / 1000.0);
             return result;
         }
     }
@@ -66,7 +66,7 @@ public class Smallest2019 {
         List<Rectangle> rectangles = new LinkedList<>();
         rectangles.add(new Rectangle());
 
-        long startTime = System.currentTimeMillis();
+//        long startTime = System.currentTimeMillis();
 
 //        System.out.println(3);
         for (int i = 0; i < yAbsoluteSortedList.size(); i += 1) {
@@ -134,7 +134,7 @@ public class Smallest2019 {
 //        for (Rectangle rect: finalRectangles) {
 //            System.out.println(rect.size());
 //        }
-        System.out.println("runtime of computeRectangles: " + (System.currentTimeMillis() - startTime) / 1000.0);
+//        System.out.println("runtime of computeRectangles: " + (System.currentTimeMillis() - startTime) / 1000.0);
         return finalRectangles;
     }
 }
