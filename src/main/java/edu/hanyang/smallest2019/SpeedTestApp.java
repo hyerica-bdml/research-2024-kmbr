@@ -25,7 +25,7 @@ public class SpeedTestApp {
         System.out.println("K: " + Config.K);
         System.out.println("NUM_OF_POINTS: " + Config.NUM_OF_POINTS);
 
-        for (int i = 0; i < 10; i += 1) {
+        for (int i = 0; i < Config.NUM_OF_ITERATIONS; i += 1) {
             runOnce(i);
         }
     }
@@ -46,7 +46,7 @@ public class SpeedTestApp {
                 pointGenerationClusterProbs
         );
 
-        try (FileWriter fout = new FileWriter(String.format("logs/related_works/smallest2019/divide_and_conquer/K%d_N%d.csv", Config.K, Config.NUM_OF_POINTS), true);
+        try (FileWriter fout = new FileWriter("logs/related_works/smallest2019/divide_and_conquer.csv", true);
              BufferedWriter bout = new BufferedWriter(fout)) {
 
             long startTime = System.currentTimeMillis();

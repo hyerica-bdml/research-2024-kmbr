@@ -32,7 +32,7 @@ public class SpeedTestApp {
         System.out.println("K: " + Config.K);
         System.out.println("NUM_OF_POINTS: " + Config.NUM_OF_POINTS);
 
-        for (int i = 0; i < 10; i += 1) {
+        for (int i = 0; i < Config.NUM_OF_ITERATIONS; i += 1) {
             runOnce();
         }
     }
@@ -80,7 +80,7 @@ public class SpeedTestApp {
 //        kmbr.printCacheBits();
 //        kmbr.printDirtyProbs();
 
-        try (FileWriter fout = new FileWriter(String.format("logs/K%d_N%d_without_caching.csv", Config.K, Config.NUM_OF_POINTS), true);
+        try (FileWriter fout = new FileWriter("logs/ours/without_caching.csv", true);
              BufferedWriter bout = new BufferedWriter(fout)) {
 
             long startTime = System.currentTimeMillis();
@@ -98,7 +98,7 @@ public class SpeedTestApp {
         pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
         kmbr.updateCacheBits();
 
-        try (FileWriter fout = new FileWriter(String.format("logs/K%d_N%d_with_caching.csv", Config.K, Config.NUM_OF_POINTS), true);
+        try (FileWriter fout = new FileWriter("logs/ours/with_caching.csv", true);
              BufferedWriter bout = new BufferedWriter(fout)) {
             long startTime = System.currentTimeMillis();
             MBR mbr = kmbr.find();
