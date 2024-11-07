@@ -7,3 +7,4 @@ python/simulation/*.jpg
 **/*.swp
 **/.DS_store
 **/.ipynb_checkpoints/
+**/*_bk.*
