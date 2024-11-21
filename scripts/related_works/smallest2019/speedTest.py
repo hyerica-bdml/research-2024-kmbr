@@ -22,6 +22,21 @@ if __name__ == "__main__":
 #     for np, ni in zip(num_of_points, num_of_iters):
 #         run(k, np, ni)
 #
-    for k in range(15, 31, 5):
-        for num_of_points in range(500, 10001, 500):
-            run(k, num_of_points, 10)
+
+#     for k in range(15, 31, 5):
+#         for num_of_points in range(500, 10001, 500):
+#             run(k, num_of_points, 1)
+
+    for num_of_points in range(5000, 6501, 500):
+        run(5, num_of_points, 10)
+
+    run(5, 8000, 10)
+
+    for num_of_points in range(7000, 10001, 500):
+        run(25, num_of_points, 1)
+
+    for num_of_points in range(500, 3001, 500):
+        run(30, num_of_points, 3)
+
+    for num_of_points in range(3500, 10001, 500):
+        run(30, num_of_points, 1)
