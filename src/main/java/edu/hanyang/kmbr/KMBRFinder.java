@@ -386,7 +386,7 @@ public class KMBRFinder implements Externalizable {
                     double timeCostWithChildrenCaching = leftTimeCost + rightTimeCost + numOfPoints;
                     double timeCostWithoutChildrenCaching = leftTimeCostWithoutCaching + rightTimeCostWithoutCaching + numOfPoints;
 
-                    double timeCostExpectationWithCaching = dirtyProb * timeCostWithoutChildrenCaching + (1 - dirtyProb);
+                    double timeCostExpectationWithCaching = dirtyProb*timeCostWithoutChildrenCaching + (1 - dirtyProb);
 
                     // caching
                     // System.out.println("COST: " + timeCostWithChildrenCaching + ", " + timeCostExpectationWithCaching);
@@ -517,23 +517,6 @@ public class KMBRFinder implements Externalizable {
         mbrCache.remove(treeIndex);
     }
 
-//    protected MBRResult computeMBRInLeaf(final int treeIndex) {
-////        System.out.println("LEAF");
-//        int pointSetIndex = (int) tree.getValue(treeIndex);
-//        PointSet pointSet = tree.getPointSet(pointSetIndex);
-//
-//        Point[] xSortedPoints = Arrays.copyOf(pointSet.getXSortedPoints(), pointSet.size());
-//        Point[] ySortedPoints = Arrays.copyOf(pointSet.getYSortedPoints(), pointSet.size());
-//
-//        if (pointSet.size() < Config.K) return new MBRResult(null, xSortedPoints, ySortedPoints);
-//
-//        MBR mbr = Utilities.computeMBR(xSortedPoints, ySortedPoints);
-////        System.out.println("x range: (" + xSortedPoints[0].getX() + ", " + xSortedPoints[xSortedPoints.length - 1].getX() + ")");
-////        System.out.println("y range: (" + ySortedPoints[0].getY() + ", " + ySortedPoints[ySortedPoints.length - 1].getY() + ")");
-////        System.out.println("LEAF minMBR size: " + mbr.size());
-//        return new MBRResult(mbr, xSortedPoints, ySortedPoints);
-//    }
-
     protected MBRResult computeMBRInLeaf(final int treeIndex) {
 //        System.out.println("LEAF");
         int pointSetIndex = (int) tree.getValue(treeIndex);
@@ -544,7 +527,8 @@ public class KMBRFinder implements Externalizable {
 
         if (pointSet.size() < Config.K) return new MBRResult(null, xSortedPoints, ySortedPoints);
         else if (pointSet.size() == Config.K) return new MBRResult(new MBR(xSortedPoints), xSortedPoints, ySortedPoints);
-        else throw new RuntimeException("[computeMBRInLeaf] INVALID point set size!");
+//        else throw new RuntimeException("[computeMBRInLeaf] INVALID point set size!");
+        else return new MBRResult(Utilities.computeMBR(xSortedPoints, ySortedPoints), xSortedPoints, ySortedPoints);
 
 //        MBR mbr = Utilities.computeMBR(xSortedPoints, ySortedPoints);
 //        System.out.println("x range: (" + xSortedPoints[0].getX() + ", " + xSortedPoints[xSortedPoints.length - 1].getX() + ")");
@@ -684,209 +668,4 @@ public class KMBRFinder implements Externalizable {
         }
         return alpha / alphaPlusBeta;
     }
-
-//    public void movePoint(final Point p, final double x, final double y) {
-//        int treeIndex = tree.search(p);
-//        int pointSetIndex = (int) tree.getValue(treeIndex);
-//        double alpha = 1.0;
-//
-//        if (Config.useCache) {
-//            int currentTreeIndex = treeIndex;
-//            while (currentTreeIndex > -1) {
-//                removeCache(currentTreeIndex);
-//                currentTreeIndex = tree.getParent(currentTreeIndex);
-//            }
-//
-//            alpha = alphas.get(pointSetIndex);
-//        }
-//
-//        int removedPointSetIndex = tree.remove(p);
-//        if (removedPointSetIndex >= 0 && Config.useCache) {
-//            alphas.remove(removedPointSetIndex);
-//            alphaPlusBeta += 1;
-//        }
-//
-//        p.set(x, y);
-//        int newPointSetIndex = tree.add(p);
-//
-//        if (newPointSetIndex >= 0 && Config.useCache) {
-//            alphas.put(pointSetIndex, alpha + 1);
-//            alphas.put(newPointSetIndex, alpha + 1);
-//            alphaPlusBeta += 1;
-//
-//            int currentTreeIndex = tree.search(p);
-//            while (currentTreeIndex > -1) {
-//                if (getCache(currentTreeIndex) != null)
-//                    removeCache(currentTreeIndex);
-//
-//                currentTreeIndex = tree.getParent(currentTreeIndex);
-//            }
-//        }
-//    }
-
-//    /**
-//     *
-//     * @param treeIndex kMBR 계산을 위한 트리의 루트노드(sub-root node)
-//     * @param noCache 이 노드 아래의 노드는 캐싱하지 않을때 true
-//     * @return
-//     */
-//    protected MBRResult computeMBR(final int treeIndex, final boolean noCache) {
-//        MBRResult result;
-//
-//        if (Config.useCache) {
-//            result = mbrCache.getOrDefault(treeIndex, null);
-//            int cacheBit = cacheBits.getOrDefault(treeIndex, 0);
-//            if (result == null) {
-//                if (tree.isLeaf(treeIndex)) {
-//                    result = computeMBRInLeaf(treeIndex);
-//
-//                    if (!noCache && cacheBit == 1)
-//                        mbrCache.put(treeIndex, result);
-//
-//                    if (globalMBR != null) {
-//                        if (result != null && result.getMBR() != null && result.getMBR().size() < globalMBR.size())
-//                            globalMBR = result.getMBR();
-//                    }
-//                    else {
-//                        if (result != null && result.getMBR() != null)
-//                            globalMBR = result.getMBR();
-//                    }
-//                }
-//                else {
-//                    int leftChild = tree.getLeftChild(treeIndex);
-//                    int rightChild = tree.getRightChild(treeIndex);
-//
-//                    if (!noCache) {
-//                        if (cacheBit == 1) {
-//                            // 이 노드를 캐싱하면 아래 children은 캐싱할 필요가 없음
-//                            MBRResult leftResult = computeMBR(leftChild, true);
-//                            MBRResult rightResult = computeMBR(rightChild, true);
-//
-//                            if (globalMBR != null) {
-//                                if (leftResult != null && leftResult.getMBR() != null && leftResult.getMBR().size() < globalMBR.size()) globalMBR = leftResult.getMBR();
-//                                if (rightResult != null && rightResult.getMBR() != null &&  rightResult.getMBR().size() < globalMBR.size()) globalMBR = rightResult.getMBR();
-//                            }
-//                            else {
-//                                if (leftResult != null && rightResult != null) {
-//                                    if (leftResult.getMBR() != null && rightResult.getMBR() != null) {
-//                                        if (leftResult.getMBR().size() < rightResult.getMBR().size()) globalMBR = leftResult.getMBR();
-//                                        else globalMBR = rightResult.getMBR();
-//                                    }
-//                                    else if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                                    else if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                                }
-//                                else if (leftResult != null) {
-//                                    if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                                }
-//                                else if (rightResult != null) {
-//                                    if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                                }
-//                            }
-//
-//                            result = computeMBRInNonLeaf(treeIndex, leftResult, rightResult);
-//                            mbrCache.put(treeIndex, result);
-//                        } else {
-//                            MBRResult leftResult = computeMBR(leftChild, false);
-//                            MBRResult rightResult = computeMBR(rightChild, false);
-//
-//                            if (globalMBR != null) {
-//                                if (leftResult != null && leftResult.getMBR() != null && leftResult.getMBR().size() < globalMBR.size()) globalMBR = leftResult.getMBR();
-//                                if (rightResult != null && rightResult.getMBR() != null &&  rightResult.getMBR().size() < globalMBR.size()) globalMBR = rightResult.getMBR();
-//                            }
-//                            else {
-//                                if (leftResult != null && rightResult != null) {
-//                                    if (leftResult.getMBR() != null && rightResult.getMBR() != null) {
-//                                        if (leftResult.getMBR().size() < rightResult.getMBR().size()) globalMBR = leftResult.getMBR();
-//                                        else globalMBR = rightResult.getMBR();
-//                                    }
-//                                    else if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                                    else if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                                }
-//                                else if (leftResult != null) {
-//                                    if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                                }
-//                                else if (rightResult != null) {
-//                                    if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                                }
-//                            }
-//
-//                            result = computeMBRInNonLeaf(treeIndex, leftResult, rightResult);
-//                        }
-//                    } else {
-//                        MBRResult leftResult = computeMBR(leftChild, true);
-//                        MBRResult rightResult = computeMBR(rightChild, true);
-//
-//                        if (globalMBR != null) {
-//                            if (leftResult != null && leftResult.getMBR() != null && leftResult.getMBR().size() < globalMBR.size()) globalMBR = leftResult.getMBR();
-//                            if (rightResult != null && rightResult.getMBR() != null &&  rightResult.getMBR().size() < globalMBR.size()) globalMBR = rightResult.getMBR();
-//                        }
-//                        else {
-//                            if (leftResult != null && rightResult != null) {
-//                                if (leftResult.getMBR() != null && rightResult.getMBR() != null) {
-//                                    if (leftResult.getMBR().size() < rightResult.getMBR().size()) globalMBR = leftResult.getMBR();
-//                                    else globalMBR = rightResult.getMBR();
-//                                }
-//                                else if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                                else if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                            }
-//                            else if (leftResult != null) {
-//                                if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                            }
-//                            else if (rightResult != null) {
-//                                if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                            }
-//                        }
-//
-//                        result = computeMBRInNonLeaf(treeIndex, leftResult, rightResult);
-//                    }
-//                }
-//            }
-//        }
-//        else {
-//            if (tree.isLeaf(treeIndex)) {
-//                result = computeMBRInLeaf(treeIndex);
-//
-//                if (globalMBR != null) {
-//                    if (result != null && result.getMBR() != null && result.getMBR().size() < globalMBR.size())
-//                        globalMBR = result.getMBR();
-//                }
-//                else {
-//                    if (result != null && result.getMBR() != null)
-//                        globalMBR = result.getMBR();
-//                }
-//            }
-//            else {
-//                int leftChild = tree.getLeftChild(treeIndex);
-//                int rightChild = tree.getRightChild(treeIndex);
-//
-//                MBRResult leftResult = computeMBR(leftChild, true);
-//                MBRResult rightResult = computeMBR(rightChild, true);
-//
-//                if (globalMBR != null) {
-//                    if (leftResult != null && leftResult.getMBR() != null && leftResult.getMBR().size() < globalMBR.size()) globalMBR = leftResult.getMBR();
-//                    if (rightResult != null && rightResult.getMBR() != null &&  rightResult.getMBR().size() < globalMBR.size()) globalMBR = rightResult.getMBR();
-//                }
-//                else {
-//                    if (leftResult != null && rightResult != null) {
-//                        if (leftResult.getMBR() != null && rightResult.getMBR() != null) {
-//                            if (leftResult.getMBR().size() < rightResult.getMBR().size()) globalMBR = leftResult.getMBR();
-//                            else globalMBR = rightResult.getMBR();
-//                        }
-//                        else if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                        else if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                    }
-//                    else if (leftResult != null) {
-//                        if (leftResult.getMBR() != null) globalMBR = leftResult.getMBR();
-//                    }
-//                    else if (rightResult != null) {
-//                        if (rightResult.getMBR() != null) globalMBR = rightResult.getMBR();
-//                    }
-//                }
-//
-//                result = computeMBRInNonLeaf(treeIndex, leftResult, rightResult);
-//            }
-//        }
-//
-//        return result;
-//    }
 }

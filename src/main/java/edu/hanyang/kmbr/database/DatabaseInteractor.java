@@ -87,6 +87,10 @@ public class DatabaseInteractor {
         return db.getPoints();
     }
 
+    public ClusterAssignment getPointById(final long id) {
+        return db.getPointById(id);
+    }
+
     public ClusterAssignment[] getPointsByClusterIndex(final int clusterIndex) {
         return db.getPointsByClusterIndex(clusterIndex);
     }

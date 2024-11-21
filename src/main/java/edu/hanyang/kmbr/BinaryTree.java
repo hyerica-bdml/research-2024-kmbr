@@ -510,6 +510,10 @@ public class BinaryTree implements Externalizable {
         return tree.size();
     }
 
+    public int heightSize() {
+        return heights.size();
+    }
+
     public boolean exists(final int treeIndex) {
         return tree.exists(treeIndex);
     }
@@ -583,6 +587,27 @@ public class BinaryTree implements Externalizable {
             }
 
             currentTreeIndex = getParent(currentTreeIndex);
+        }
+    }
+
+    /**
+     * get all descent leaf node index of tree whose root is treeIndex.
+     * @param treeIndex root node index to start searching
+     * @return
+     */
+    public List<Integer> getDescentPointSetIndices(int treeIndex) {
+        List<Integer> leafPointSetIndices = new LinkedList<>();
+        _getDescentPointSetIndices(treeIndex, leafPointSetIndices);
+        return leafPointSetIndices;
+    }
+
+    protected void _getDescentPointSetIndices(int treeIndex, List<Integer> storage) {
+        if (isLeaf(treeIndex)) {
+            storage.add((int) tree.get(treeIndex).value);
+        }
+        else {
+            _getDescentPointSetIndices(getLeftChild(treeIndex), storage);
+            _getDescentPointSetIndices(getRightChild(treeIndex), storage);
         }
     }
 

@@ -30,6 +30,11 @@ public class ClusterAssignment implements Externalizable {
     }
 
     @Override
+    public String toString() {
+        return "[CLUSTER] " + clusterIndex + " " + point.toString();
+    }
+
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         clusterIndex = in.readInt();
         point = (Point) in.readObject();

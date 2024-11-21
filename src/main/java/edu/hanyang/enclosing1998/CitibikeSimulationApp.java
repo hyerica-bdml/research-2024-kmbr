@@ -1,5 +1,6 @@
-package edu.hanyang.kmbr;
+package edu.hanyang.enclosing1998;
 
+import edu.hanyang.kmbr.Config;
 import edu.hanyang.kmbr.database.DatabaseInteractor;
 import edu.hanyang.kmbr.domain.ClusterAssignment;
 import edu.hanyang.kmbr.domain.Point;
@@ -20,7 +21,7 @@ public class CitibikeSimulationApp {
             for (int hour : hours) {
                 String initPath = String.format("data/citibike/parsed/citibike_streaming_init_2022-10-%d-%d.txt", day, hour);
                 String inputPath = String.format("data/citibike/parsed/citibike_streaming_2022-10-%d-%d.txt", day, hour);
-                String outputPath = String.format("logs/ours/citibike_2022-10-%d-%d-cache-%s.txt", day, hour, Config.useCache);
+                String outputPath = String.format("logs/related_works/enclosing1998/citibike_2022-10-%d-%d.txt", day, hour);
                 new CitibikeSimulationApp().run(initPath, inputPath, outputPath);
             }
         }
@@ -28,27 +29,19 @@ public class CitibikeSimulationApp {
 //        app.run("data/citibike/2022_10_25_12.csv", "logs/citibike/2022_10_25_12__with_caching.csv");
     }
 
-    private KMBRInteractor kmbr;
     private DatabaseInteractor db;
 
     public CitibikeSimulationApp() {
-        kmbr = KMBRInteractor.getInstance();
         db = DatabaseInteractor.getInstance();
     }
 
     public void run(String initPath, String inputPath, String outputPath) {
         System.out.println("Reading data...");
-        Point[] points = readInitialPoints(initPath);
-        System.out.printf("Done. (num of points: %d)\n\n", points.length);
+        List<ClusterAssignment> clusterAssignments = readInitialPoints(initPath);
+        System.out.printf("Done. (num of points: %d)\n\n", clusterAssignments.size());
 
         System.out.println("Initializing KMBR finder...");
-        kmbr.createFinder(points);
         System.out.println("Done.\n");
-
-        if (Config.useCache) {
-            kmbr.updateCacheBits();
-            kmbr.find();
-        }
 
         int iteration = 0;
 
@@ -71,9 +64,9 @@ public class CitibikeSimulationApp {
                         y = Double.parseDouble(split[3]);
                         time = split[4] + " " + split[5];
 
-                        Point p = db.getPointById(pid).getPoint();
-                        p.set(x, y);
-                        kmbr.addPoint(p);
+                        ClusterAssignment assignment = db.getPointById(pid);
+                        assignment.getPoint().set(x, y);
+                        clusterAssignments.add(assignment);
 
                     } else if (split[0].equals("remove")) {
                         pid = Long.parseLong(split[1]);
@@ -81,8 +74,7 @@ public class CitibikeSimulationApp {
                         y = Double.parseDouble(split[3]);
                         time = split[4] + " " + split[5];
 
-                        Point p = db.getPointById(pid).getPoint();
-                        kmbr.removePoint(p);
+                        clusterAssignments.remove(db.getPointById(pid));
                     }
                 } catch (NullPointerException exc) {
                     System.out.println(pid);
@@ -90,28 +82,15 @@ public class CitibikeSimulationApp {
 
                 iteration += 1;
 
-                if (Config.useCache) {
-                    if (iteration % 100 == 0) {
-                        kmbr.updateCacheBits();
-
-                        long startTime = System.currentTimeMillis();
-                        kmbr.find();
-                        double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
-                        fout.write(String.format("%f,%s\n", runtime, time));
-                        System.out.printf("Iteration: %d, runtime: %f\n", iteration, runtime);
-                    }
+                if (iteration % 500 == 0) {
+                    long startTime = System.currentTimeMillis();
+                    new Enclosing1998(clusterAssignments, Config.K).find();
+                    double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
+                    fout.write(String.format("%f,%s\n", runtime, time));
+                    fout.flush();
+                    System.out.printf("Iteration: %d, runtime: %f\n", iteration, runtime);
+                    if (runtime >= 600) break;
                 }
-                else {
-                    if (iteration % 500 == 0) {
-                        long startTime = System.currentTimeMillis();
-                        kmbr.find();
-                        double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
-                        fout.write(String.format("%f,%s\n", runtime, time));
-                        System.out.printf("Iteration: %d, runtime: %f\n", iteration, runtime);
-                    }
-                }
-
-                fout.flush();
             }
 
         } catch (IOException exc) {
@@ -119,7 +98,7 @@ public class CitibikeSimulationApp {
         }
     }
 
-    public Point[] readInitialPoints(final String initFile) {
+    public List<ClusterAssignment> readInitialPoints(final String initFile) {
         List<ClusterAssignment> assignments = new LinkedList<>();
 
         try (FileReader fin = new FileReader(initFile);
@@ -129,8 +108,8 @@ public class CitibikeSimulationApp {
             while ((line = bin.readLine()) != null) {
                 String[] split = line.split(" ");
                 if (split[0].equals("create")) {
-                    double x = Double.parseDouble(split[2]) + 1000;
-                    double y = Double.parseDouble(split[3]) + 1000;
+                    double x = Double.parseDouble(split[2]);
+                    double y = Double.parseDouble(split[3]);
 
                     ClusterAssignment p = db.newPoint(x, y, 0);
                     assignments.add(p);
@@ -140,10 +119,6 @@ public class CitibikeSimulationApp {
             exc.printStackTrace();
         }
 
-        Point[] arr = new Point[assignments.size()];
-        for (int i = 0; i < arr.length; i += 1) {
-            arr[i] = assignments.get(i).getPoint();
-        }
-        return arr;
+        return assignments;
     }
 }

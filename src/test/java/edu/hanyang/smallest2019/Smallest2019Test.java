@@ -19,10 +19,10 @@ public class Smallest2019Test {
     public void algorithmTest() {
         DatabaseInteractor db = DatabaseInteractor.getInstance();
 //        Random random = new Random(40);
-        Random random = new Random(87);
+        Random random = new Random(102);
 
         List<ClusterAssignment> points = new LinkedList<>();
-        for (int i = 0; i < 500; i += 1) {
+        for (int i = 0; i < 5000; i += 1) {
 //            points.add(new ClusterAssignment(i, new Point(i, Math.pow(2, i), i+1)));
             points.add(new ClusterAssignment(i, new Point(i, random.nextDouble(), random.nextDouble())));
         }
@@ -66,6 +66,7 @@ public class Smallest2019Test {
     private void savePoints(final List<ClusterAssignment> allPoints,
                             final List<ClusterAssignment> estimatedMBRPoints,
                             final List<Point> trueMBRPoints) {
+
         try (FileWriter fwriter = new FileWriter("test.txt");
              BufferedWriter writer = new BufferedWriter(fwriter)) {
 

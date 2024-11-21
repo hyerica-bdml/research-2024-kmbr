@@ -28,7 +28,7 @@ public class Voronoi1991 {
         int order = 6*k - 6;
         List<Coordinate> coordinates = getCoordinates(clusterAssignments);
         HighOrderVoronoiDiagram voronoiDiagram = new HighOrderVoronoiDiagram(coordinates, order);
-        System.out.println("High order voronoi");
+//        System.out.println("High order voronoi");
         List<VoronoiSet> voronoiSets = voronoiDiagram.getVoronoiSets();
 
         Map<Tuple<Coordinate>, VoronoiMBRResult> resultMap = new LinkedHashMap<>();
@@ -55,28 +55,12 @@ public class Voronoi1991 {
                 .values()
                 .stream()
                 .reduce((r1, r2) -> {
-                    if (r1 == null && r2 == null) return null;
-                    else if (r1 == null) return r2;
-                    else if (r2 == null) return r1;
+                    if (r2 == null) return r1;
                     else if (r1.size() < r2.size()) return r1;
                     else return r2;
                 });
 
         return finalResult.orElse(null);
-    }
-
-    protected List<Coordinate> getCoordinates(final List<ClusterAssignment> clusterAssignments) {
-        List<Coordinate> coordinates = new LinkedList<>();
-
-        for (int i = 0; i < clusterAssignments.size(); i += 1) {
-            ClusterAssignment clusterAssignment = clusterAssignments.get(i);
-            coordinates.add(new Coordinate(
-                    clusterAssignment.getPoint().getX(),
-                    clusterAssignment.getPoint().getY()
-            ));
-        }
-
-        return coordinates;
     }
 
     protected VoronoiMBRResult findLocal(final VoronoiSet voronoiSet, final Coordinate p1, final Coordinate p2) {
@@ -109,6 +93,20 @@ public class Voronoi1991 {
         }
 
         return result;
+    }
+
+    protected List<Coordinate> getCoordinates(final List<ClusterAssignment> clusterAssignments) {
+        List<Coordinate> coordinates = new LinkedList<>();
+
+        for (int i = 0; i < clusterAssignments.size(); i += 1) {
+            ClusterAssignment clusterAssignment = clusterAssignments.get(i);
+            coordinates.add(new Coordinate(
+                    clusterAssignment.getPoint().getX(),
+                    clusterAssignment.getPoint().getY()
+            ));
+        }
+
+        return coordinates;
     }
 
     public VoronoiMBRResult computeMBR(Coordinate[] xSortedPoints, Coordinate[] ySortedPoints) {
@@ -194,7 +192,7 @@ public class Voronoi1991 {
 //
 //        return result;
 //    }
-
+//
 //    protected VoronoiMBRResult findLocal(final VoronoiSet voronoiSet) {
 //        List<Coordinate> coordinates = voronoiSet.getVoronoiSet();
 //        Coordinate[] xSortedCoords = coordinates.toArray(new Coordinate[0]);

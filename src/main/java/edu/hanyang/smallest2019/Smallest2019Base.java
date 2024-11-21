@@ -27,6 +27,8 @@ public class Smallest2019Base {
                                             final int tauBottom,
                                             final DistanceMatrix distanceMat) {
 
+//        long startTime = System.currentTimeMillis();
+
         if (sigmaTop - tauBottom < Config.K || tauBottom > sigmaTop) return null;
 //        System.out.println(sigmaTop + ", " + sigmaBottom + ", " + tauTop + ", " + tauBottom);
 
@@ -130,6 +132,7 @@ public class Smallest2019Base {
             result = new SmallestMBRResult(candidates);
         }
 
+//        System.out.println("RECURSIVE TIME: " + (System.currentTimeMillis() - startTime)/1000.0);
         return result;
     }
 

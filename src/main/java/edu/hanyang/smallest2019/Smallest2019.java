@@ -25,6 +25,7 @@ public class Smallest2019 {
             List<Rectangle> rectangles = computeRectangles(ySortedList, l);
 
             SmallestMBRResult result = null;
+//            System.out.println(rectangles.size());
 
             for (Rectangle rect: rectangles) {
                 Smallest2019Base basicAlgorithm = new Smallest2019Base(rect.getClusterAssignments());

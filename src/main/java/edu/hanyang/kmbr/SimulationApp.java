@@ -13,7 +13,7 @@ import java.util.List;
 public class SimulationApp {
 
     public static void main(String[] args) {
-        new SimulationApp().run();
+        new SimulationApp().run_with_add();
     }
 
     private DatabaseInteractor db;
@@ -28,7 +28,7 @@ public class SimulationApp {
         pointManipulator = new PointManipulator(db, kmbr, writer);
     }
 
-    public void run() {
+    public void run_with_init() {
         double[] xLimits = {20.0, 50.0};
         double[] yLimits = {20.0, 50.0};
         double[] stdLimits = {1.5, 2.5};
@@ -56,6 +56,86 @@ public class SimulationApp {
 
         startTime = System.currentTimeMillis();
         kmbr.createFinder(points);
+        runtime = (System.currentTimeMillis() - startTime)/1000.0;
+        System.out.println("Tree construction time: " + runtime);
+
+        for (Point p: points) {
+            writer.write(EventType.CREATE, p.getId(), p.getX(), p.getY());
+        }
+
+//        for (int i = 0; i < clusterProbabilities.length; i += 1) {
+//            System.out.println(clusterProbabilities[i]);
+//        }
+
+        if (Config.useCache) {
+            System.out.println("Update cache bit...");
+            kmbr.updateCacheBits();
+        }
+
+        MBR mbr = kmbr.find();
+
+        startTime = System.currentTimeMillis();
+        System.out.println("MBR size: " + mbr.size());
+        runtime = (System.currentTimeMillis() - startTime)/1000.0;
+        System.out.println("MBR computation time: " + runtime);
+        writer.writeMBR(mbr.getPointIds());
+
+        double[] moveClusterProbs = db.pointFactory.getRandomClusterProbabilities(Config.NUM_OF_GROUPS);
+
+        for (int i = 0; i < 30; i += 1) {
+//        for (int i = 0; i < 1; i += 1) {
+            System.out.println("Random move iteration: " + (i + 1));
+            startTime = System.currentTimeMillis();
+            pointManipulator.moveRandomPoints(clusterAssignments, 50, 100, moveClusterProbs);
+//            pointManipulator.moveRandomPoints(points, 100, 200, clusterProbs);
+            runtime = (System.currentTimeMillis() - startTime)/1000.0;
+            System.out.println("Data moving time: " + runtime);
+
+            if (Config.useCache) {
+                System.out.println("Update cache bit...");
+                kmbr.updateCacheBits();
+            }
+            System.out.println("Computing MBR...");
+            startTime = System.currentTimeMillis();
+            mbr = kmbr.find();
+            System.out.println("MBR size: " + mbr.size());
+            runtime = (System.currentTimeMillis() - startTime)/1000.0;
+            System.out.println("MBR computation time: " + runtime);
+            writer.writeMBR(mbr.getPointIds());
+        }
+
+        close();
+    }
+
+    public void run_with_add() {
+        double[] xLimits = {20.0, 50.0};
+        double[] yLimits = {20.0, 50.0};
+        double[] stdLimits = {1.5, 2.5};
+//        double[] stdLimits = {2.0, 2.5};
+        kmbr.createFinder();
+
+        double[] pointGenerationClusterProbs = db.pointFactory.getRandomClusterProbabilities(Config.NUM_OF_GROUPS);
+
+        long startTime = System.currentTimeMillis();
+        ClusterAssignment[] clusterAssignments = db.generateRandomPoints(
+                Config.NUM_OF_POINTS,
+                Config.NUM_OF_GROUPS,
+                xLimits,
+                yLimits,
+                stdLimits,
+                pointGenerationClusterProbs
+        );
+        double runtime = (System.currentTimeMillis() - startTime)/1000.0;
+        System.out.println("Data creation time: " + runtime);
+
+        Point[] points = new Point[clusterAssignments.length];
+
+        for (int i = 0; i < points.length; i += 1) {
+            points[i] = clusterAssignments[i].getPoint();
+            kmbr.addPoint((points[i]));
+        }
+
+        startTime = System.currentTimeMillis();
         runtime = (System.currentTimeMillis() - startTime)/1000.0;
         System.out.println("Tree construction time: " + runtime);
 

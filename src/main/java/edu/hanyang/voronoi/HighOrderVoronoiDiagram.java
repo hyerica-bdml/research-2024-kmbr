@@ -14,12 +14,21 @@ public class HighOrderVoronoiDiagram {
     protected Coordinate[] coordinates;
     protected List<VoronoiSet> voronoiSets;
     protected int order;
+    private Envelope envelope;
 
     public HighOrderVoronoiDiagram(final List<Coordinate> coordinates, final int order) {
         this.coordinates = new Coordinate[coordinates.size()];
+        double minX = Double.MAX_VALUE, maxX = Double.MIN_VALUE, minY = Double.MAX_VALUE, maxY = Double.MIN_VALUE;
         for (int i = 0; i < coordinates.size(); i += 1) {
-            this.coordinates[i] = coordinates.get(i);
+            Coordinate c = coordinates.get(i);
+            this.coordinates[i] = c;
+            if (c.getX() < minX) minX = c.getX();
+            if (c.getX() > maxX) maxX = c.getX();
+            if (c.getY() < minY) minY = c.getY();
+            if (c.getY() > maxY) maxY = c.getY();
         }
+//        System.out.println(minX + ", " + maxX + ", " + minY + ", " + maxY);
+        this.envelope = new Envelope(minX - 100, maxX + 100, minY - 100, maxY + 100);
 
         this.order = order;
         constructHighOrderVoronoiDiagram(Arrays.asList(this.coordinates), this.order);
@@ -48,7 +57,7 @@ public class HighOrderVoronoiDiagram {
         voronoiDiagramBuilder.setSites(points);
 
 //        Envelope envelope = new Envelope(-100, 150, -100, 150);
-        Envelope envelope = new Envelope(-1000, 1000, -1000, 1000);
+//        Envelope envelope = new Envelope(-1000, 1000, -1000, 1000);
 //        Envelope envelope = new Envelope(-200, 250, -200, 250);
         voronoiDiagramBuilder.setClipEnvelope(envelope);
 
@@ -71,6 +80,7 @@ public class HighOrderVoronoiDiagram {
         }
 
         while (voronoiSets.get(0).getOrder() < order) {
+//            System.out.println(voronoiSets.get(0).getOrder());
             VoronoiSet voronoiSet = voronoiSets.get(0);
             Geometry voronoiCell = voronoiSet.getVoronoiCell();
 

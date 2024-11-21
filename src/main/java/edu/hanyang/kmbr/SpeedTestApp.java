@@ -60,30 +60,15 @@ public class SpeedTestApp {
         }
 
         kmbr.createFinder(points);
-
-//        for (int i = 0; i < clusterProbabilities.length; i += 1) {
-//            System.out.println(clusterProbabilities[i]);
-//        }
-
-//        if (Config.useCache) {
-//            kmbr.updateCacheBits();
-//        }
-//        kmbr.find();
-
-        double[] moveClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
-
-        int minMove = 1000;
-        int maxMove = 2000;
-        pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
         kmbr.updateCacheBits();
 
-//        kmbr.printCacheBits();
-//        kmbr.printDirtyProbs();
+        double[] moveClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
 
         try (FileWriter fout = new FileWriter("logs/ours/without_caching.csv", true);
              BufferedWriter bout = new BufferedWriter(fout)) {
 
             long startTime = System.currentTimeMillis();
+            // This computation is "without cache" since it is the first run.
             MBR mbr = kmbr.find();
             double runtime = (System.currentTimeMillis() - startTime)/1000.0;
             bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
@@ -93,20 +78,20 @@ public class SpeedTestApp {
             exc.printStackTrace();
         }
 
-        minMove = 50;
-        maxMove = 100;
-        pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
-        kmbr.updateCacheBits();
-
-        try (FileWriter fout = new FileWriter("logs/ours/with_caching.csv", true);
-             BufferedWriter bout = new BufferedWriter(fout)) {
-            long startTime = System.currentTimeMillis();
-            MBR mbr = kmbr.find();
-            double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
-            bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
-            System.out.println("(With cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
+//        int minMove = 50;
+//        int maxMove = 100;
+//        pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
+//        kmbr.updateCacheBits();
+//
+//        try (FileWriter fout = new FileWriter("logs/ours/with_caching.csv", true);
+//             BufferedWriter bout = new BufferedWriter(fout)) {
+//            long startTime = System.currentTimeMillis();
+//            MBR mbr = kmbr.find();
+//            double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
+//            bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
+//            System.out.println("(With cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
+//        } catch (IOException exc) {
+//            exc.printStackTrace();
+//        }
     }
 }

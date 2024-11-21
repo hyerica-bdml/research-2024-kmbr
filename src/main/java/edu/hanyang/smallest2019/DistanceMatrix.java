@@ -3,7 +3,8 @@ package edu.hanyang.smallest2019;
 import edu.hanyang.kmbr.Config;
 import edu.hanyang.kmbr.domain.ClusterAssignment;
 
-import java.util.Arrays;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class DistanceMatrix {
     private List<List<Double>> distanceMat;
 
     public DistanceMatrix(final List<ClusterAssignment> points, final SortType sortType) {
+//        System.out.println(points.size());
         this.sortedPoints = new LinkedList<>(points);
         this.sortType = sortType;
 
@@ -29,6 +31,8 @@ public class DistanceMatrix {
     public DistanceMatrix() {}
 
     public void removePoint(final ClusterAssignment point) {
+//        long startTime = System.currentTimeMillis();
+
         int index = sortedPoints.indexOf(point);
         if (index == -1) return;
         distanceMat.remove(index);
@@ -38,15 +42,21 @@ public class DistanceMatrix {
         }
 
         sortedPoints.remove(point);
+
+//        System.out.println("REMOVAL TIME: " + (System.currentTimeMillis() - startTime)/1000.0);
     }
 
     public DistanceMatrix duplicate() {
+//        long startTime = System.currentTimeMillis();
+
         DistanceMatrix newMat = new DistanceMatrix();
         newMat.sortedPoints = new LinkedList<>(sortedPoints);
         newMat.sortType = sortType;
         newMat.distanceMat = new LinkedList<>(distanceMat);
         for (int i = 0; i < distanceMat.size(); i += 1)
             newMat.distanceMat.set(i, new LinkedList<>(distanceMat.get(i)));
+
+//        System.out.println("DUPLIATED TIME: " + (System.currentTimeMillis() - startTime)/1000.0);
 
         return newMat;
     }
@@ -99,6 +109,8 @@ public class DistanceMatrix {
     }
 
     private void computeDistanceMatrix() {
+//        long startTime = System.currentTimeMillis();
+
         double[][] distanceMat = new double[sortedPoints.size()][sortedPoints.size()];
 
         for (int i = 0; i < sortedPoints.size() - 1; i += 1) {
@@ -123,6 +135,8 @@ public class DistanceMatrix {
             for (int j = 0; j < sortedPoints.size(); j += 1)
                 this.distanceMat.get(i).add(distanceMat[i][j]);
         }
+
+//        System.out.println("DISTANCE COMPUTE TIME: " + (System.currentTimeMillis() - startTime)/1000.0);
     }
 
     enum SortType {
