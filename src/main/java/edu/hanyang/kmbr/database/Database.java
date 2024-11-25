@@ -60,30 +60,6 @@ public class Database implements Externalizable {
         return filteredPoints.toArray(points);
     }
 
-//    public void updateClusterMean() {
-//        Map<Integer, Integer> numOfPointsInCluster = new HashMap<>();
-//        for (ClusterAssignment assignment: clusterAssignments) {
-//            int clusterIndex = assignment.getClusterIndex();
-//            int numOfPoints = numOfPointsInCluster.getOrDefault(clusterIndex, 0);
-//            numOfPointsInCluster.put(clusterIndex, numOfPoints + 1);
-//
-//            Point p = assignment.getPoint();
-//            double x = p.getX();
-//            double y = p.getY();
-//
-//            Coordinate mean = clusterMean.getOrDefault(clusterIndex, new Coordinate(0, 0));
-//            mean.set(mean.getX() + x, mean.getY() + y);
-//        }
-//
-//        for (int c = 0; c < numOfPointsInCluster.size(); i += 1) {
-//            if (clusterMean.containsKey(c)) {
-//                Coordinate mean = clusterMean.get(c);
-//                mean.set(mean.getX() / numOfPointsInCluster.get(c), mean.getY() / numOfPointsInCluster.get(c));
-//            }
-//        }
-//    }
-
-
     public Set<Integer> getClusterIndices() {
         return clusterMean.keySet();
     }

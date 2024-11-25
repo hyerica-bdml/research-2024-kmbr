@@ -212,57 +212,6 @@ public class KMBRFinder implements Externalizable {
         normalizeAlphas();
     }
 
-
-//    public void movePoint(final Point p, final double x, final double y) {
-//        int beforeTreeIndex = tree.search(p, 0);
-//        int beforePointSetIndex = (int) tree.getValue(beforeTreeIndex);
-//        PointSet pointSet = tree.getPointSet(beforePointSetIndex);
-//
-//        if (x >= pointSet.getMinX() || x <= pointSet.getMaxX()) {
-//            pointSet.remove(p);
-//            p.set(x, y);
-//            pointSet.add(p);
-//
-//            if (Config.useCache) {
-//                int currentTreeIndex = beforeTreeIndex;
-//                while (currentTreeIndex > -1) {
-//                    removeCache(currentTreeIndex);
-//                    currentTreeIndex = tree.getParent(currentTreeIndex);
-//                }
-//
-//                double alpha = alphas.get(beforePointSetIndex);
-//                alpha += (alphaPlusBeta - alpha) / 10;
-//                alphas.put(beforePointSetIndex, alpha);
-//                alphaPlusBeta += 1;
-//            }
-//        }
-//        else {
-//            int removedPointSetIndex = tree.remove(p, beforeTreeIndex);
-//            p.set(x, y);
-//            int afterTreeIndex = tree.search(p);
-//            int afterPointSetIndex = tree.add(p, afterTreeIndex);
-//
-//            if (Config.useCache) {
-//                int currentTreeIndex = afterTreeIndex;
-//                while (currentTreeIndex > -1) {
-//                    removeCache(currentTreeIndex);
-//                    currentTreeIndex = tree.getParent(currentTreeIndex);
-//                }
-//
-//                double alpha = alphas.get(beforePointSetIndex);
-//                alpha += (alphaPlusBeta - alpha) / 10;
-//                alphas.put(beforePointSetIndex, alpha);
-//                if (afterPointSetIndex >= 0)
-//                    alphas.put(afterPointSetIndex, alpha);
-//                alphaPlusBeta += 1;
-//
-//                if (removedPointSetIndex >= 0) alphas.remove(removedPointSetIndex);
-//            }
-//        }
-//
-//        normalizeAlphas();
-//    }
-
     public void normalizeAlphas() {
         if (alphaPlusBeta >= 10000) {
             for (int key : alphas.keySet()) {

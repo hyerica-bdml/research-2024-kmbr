@@ -165,42 +165,6 @@ public class BinaryTree implements Externalizable {
         return remove(p, treeIndex);
     }
 
-//    public int remove(Point p, int treeIndex) {
-//        if (!isLeaf(treeIndex))
-//            throw new RuntimeException("REMOVE: tree of '" + treeIndex + "' is not leaf!");
-//
-//        int pointSetIndex = (int) getValue(treeIndex);
-//        PointSet pointSet = getPointSet(pointSetIndex);
-//        pointSet.remove(p);
-//
-////        printTree(getParent(treeIndex));
-////        printTree();
-//
-//        if (pointSet.isEmpty()) {
-//            tree.remove(treeIndex);
-//            minXArray.remove(treeIndex);
-//            heights.remove(treeIndex);
-//            pointSets.remove(pointSetIndex);
-//
-//            if (treeIndex != 0) {
-//                int parentIndex = getParent(treeIndex);
-//                int siblingIndex = getSibling(treeIndex);
-//
-//                moveSubtree(siblingIndex, parentIndex);
-//
-//                updateTreeValues(parentIndex);
-//                updateHeights(parentIndex);
-//                balance(parentIndex);
-//            }
-//
-//            return pointSetIndex;
-//        }
-////        printTree(getParent(treeIndex));
-////        printTree();
-//
-//        return -1;
-//    }
-
     public int remove(Point p, int treeIndex) {
         if (!isLeaf(treeIndex))
             throw new RuntimeException("REMOVE: tree of '" + treeIndex + "' is not leaf!");

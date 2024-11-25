@@ -60,4 +60,27 @@ public class SpeedTestApp {
             exc.printStackTrace();
         }
     }
+
+//    public void runOnce(int execIndex) {
+//        double[] xLimits = {20.0, 50.0};
+//        double[] yLimits = {20.0, 50.0};
+//        double[] stdLimits = {0.5, 1.5};
+//
+//        double[] pointGenerationClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
+//
+//        ClusterAssignment[] clusterAssignments = db.generateRandomPoints(
+//                Config.NUM_OF_POINTS,
+//                Config.NUM_OF_GROUPS,
+//                xLimits,
+//                yLimits,
+//                stdLimits,
+//                pointGenerationClusterProbs
+//        );
+//
+//        long startTime = System.currentTimeMillis();
+//        Smallest2019 method = new Smallest2019(Arrays.asList(clusterAssignments));
+//        SmallestMBRResult mbr = method.find();
+//        double runtime = (System.currentTimeMillis() - startTime)/1000.0;
+//        System.out.println("Runtime: " + runtime + ", MBR size: " + mbr.size());
+//    }
 }

@@ -78,20 +78,20 @@ public class SpeedTestApp {
             exc.printStackTrace();
         }
 
-//        int minMove = 50;
-//        int maxMove = 100;
-//        pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
-//        kmbr.updateCacheBits();
-//
-//        try (FileWriter fout = new FileWriter("logs/ours/with_caching.csv", true);
-//             BufferedWriter bout = new BufferedWriter(fout)) {
-//            long startTime = System.currentTimeMillis();
-//            MBR mbr = kmbr.find();
-//            double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
-//            bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
-//            System.out.println("(With cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
-//        } catch (IOException exc) {
-//            exc.printStackTrace();
-//        }
+       int minMove = 50;
+       int maxMove = 100;
+       pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
+       kmbr.updateCacheBits();
+
+       try (FileWriter fout = new FileWriter("logs/ours/with_caching.csv", true);
+            BufferedWriter bout = new BufferedWriter(fout)) {
+           long startTime = System.currentTimeMillis();
+           MBR mbr = kmbr.find();
+           double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
+           bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
+           System.out.println("(With cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
+       } catch (IOException exc) {
+           exc.printStackTrace();
+       }
     }
 }

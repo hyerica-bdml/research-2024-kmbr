@@ -2,6 +2,9 @@ package edu.hanyang.kmbr;
 
 import edu.hanyang.kmbr.database.DatabaseInteractor;
 import edu.hanyang.kmbr.domain.ClusterAssignment;
+import edu.hanyang.kmbr.utils.DataWriter;
+import edu.hanyang.kmbr.utils.EventType;
+import edu.hanyang.kmbr.utils.MBR;
 
 import java.io.*;
 import java.util.Random;
@@ -28,6 +31,28 @@ public class CovidSimulationApp {
                 "data/covid-19-in-the-american-continent/parsed/covid_american_streaming_2021-7.txt",
                 String.format("logs/ours/covid_american_streaming_k%d_%s_2021-7.txt", Config.K, Config.useCache)
         );
+
+
+        // qualitative
+//        new CovidSimulationApp().run2(
+//                "data/covid-19-in-the-american-continent/parsed/covid_american_streaming_2020-1.txt",
+//                String.format("logs/ours/covid_american_streaming_k%d_%s_qualitative-2020-1.txt", Config.K, Config.useCache)
+//        );
+
+//        new CovidSimulationApp().run2(
+//                "data/covid-19-in-the-american-continent/parsed/covid_american_streaming_2020-7.txt",
+//                String.format("logs/ours/covid_american_streaming_k%d_%s_qualitative-2020-7.txt", Config.K, Config.useCache)
+//        );
+
+//        new CovidSimulationApp().run2(
+//                "data/covid-19-in-the-american-continent/parsed/covid_american_streaming_2021-1.txt",
+//                String.format("logs/ours/covid_american_streaming_k%d_%s_qualitative-2021-1.txt", Config.K, Config.useCache)
+//        );
+//
+//        new CovidSimulationApp().run2(
+//                "data/covid-19-in-the-american-continent/parsed/covid_american_streaming_2021-7.txt",
+//                String.format("logs/ours/covid_american_streaming_k%d_%s_qualitative-2021-7.txt", Config.K, Config.useCache)
+//        );
     }
 
     private final KMBRInteractor kmbr;
@@ -112,6 +137,51 @@ public class CovidSimulationApp {
                     break;
                 }
             }
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    // qualitative experiment
+    public void run2(final String csvFilePath, String outputPath) {
+        kmbr.createFinder();
+        DataWriter writer = new DataWriter(outputPath);
+
+        try (FileReader fin = new FileReader(csvFilePath);
+             BufferedReader bin = new BufferedReader(fin, 1024)) {
+
+            String line;
+            int iteration = 0;
+
+            Random random = new Random();
+
+            while ((line = bin.readLine()) != null) {
+                String[] split = line.split(" ");
+                iteration += 1;
+
+                if (split[0].equals("create")) {
+                    if (iteration % 100 == 0) {
+
+                        double x = Double.parseDouble(split[2]) + random.nextDouble()*8e-4 - 4e-4 + 1000;
+                        double y = Double.parseDouble(split[3]) + random.nextDouble()*8e-4 - 4e-4 + 1000;
+                        String time = split[4] + " " + split[5];
+
+                        ClusterAssignment p = db.newPoint(x, y, 0);
+                        kmbr.addPoint(p.getPoint());
+                        writer.write(EventType.CREATE, p.getPoint().getId(), x, y);
+
+                    }
+                }
+            }
+
+            kmbr.updateCacheBits();
+
+            long startTime = System.currentTimeMillis();
+            MBR mbr = kmbr.find();
+            double runtime = (System.currentTimeMillis() - startTime)/1000.0;
+            System.out.printf("Iteration: %d, Runtime: %f\n", iteration, runtime);
+            writer.writeMBR(mbr.getPointIds());
+            writer.close();
         } catch (IOException exc) {
             exc.printStackTrace();
         }

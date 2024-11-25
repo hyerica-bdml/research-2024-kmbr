@@ -79,6 +79,10 @@ public class DatabaseInteractor {
         return pointFactory.newPoint(x, y, clusterIndex);
     }
 
+    public ClusterAssignment newPoint(final long id, final double x, final double y, final int clusterIndex) {
+        return pointFactory.newPoint(id, x, y, clusterIndex);
+    }
+
     public ClusterAssignment newPoint(final double x, final double y) {
         return pointFactory.newPoint(x, y);
     }

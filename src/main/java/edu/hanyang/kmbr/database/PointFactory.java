@@ -24,6 +24,14 @@ public class PointFactory {
         return a;
     }
 
+    public ClusterAssignment newPoint(final long id, final double x, final double y, final int clusterIndex) {
+        long newId = id;
+        Point p = new Point(newId, x, y);
+        ClusterAssignment a = new ClusterAssignment(clusterIndex, p);
+        db.addPoint(a);
+        return a;
+    }
+
     public ClusterAssignment newPoint(final double x, final double y) {
         long newId = db.getMaxPointId() + 1;
         Point p = new Point(newId, x, y);
