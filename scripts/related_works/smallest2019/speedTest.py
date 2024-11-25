@@ -6,7 +6,7 @@ def run(k, num_of_points, num_of_iters):
     os.environ["NUM_OF_POINTS"] = f"{num_of_points}"
     os.environ["NUM_OF_ITERATIONS"] = f"{num_of_iters}"
 
-    subprocess.run(["mvn", "exec:java", "-D", "exec.mainClass=edu.hanyang.smallest2019.SpeedTestApp"])
+    subprocess.run(["mvn", "clean", "compile", "exec:java", "-D", "exec.mainClass=edu.hanyang.smallest2019.SpeedTestApp"])
 
 
 if __name__ == "__main__":
@@ -27,16 +27,19 @@ if __name__ == "__main__":
 #         for num_of_points in range(500, 10001, 500):
 #             run(k, num_of_points, 1)
 
-    for num_of_points in range(5000, 6501, 500):
-        run(5, num_of_points, 10)
-
-    run(5, 8000, 10)
-
-    for num_of_points in range(7000, 10001, 500):
-        run(25, num_of_points, 1)
-
     for num_of_points in range(500, 3001, 500):
-        run(30, num_of_points, 3)
-
-    for num_of_points in range(3500, 10001, 500):
-        run(30, num_of_points, 1)
+        run(30, num_of_points, 7)
+#
+#     for num_of_points in range(5000, 6501, 500):
+#         run(5, num_of_points, 10)
+#
+#     run(5, 8000, 10)
+#
+#     for num_of_points in range(7000, 10001, 500):
+#         run(25, num_of_points, 1)
+#
+#     for num_of_points in range(500, 3001, 500):
+#         run(30, num_of_points, 3)
+#
+#     for num_of_points in range(3500, 10001, 500):
+#         run(30, num_of_points, 1)
