@@ -110,7 +110,7 @@ public class CitibikeSimulationApp {
                         kmbr.updateCacheBits();
 
                     long startTime = System.currentTimeMillis();
-                    kmbr.find();x
+                    kmbr.find();
                     double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
                     fout.write(String.format("%f,%s\n", runtime, time));
                     System.out.printf("Iteration: %d, runtime: %f\n", iteration, runtime);
