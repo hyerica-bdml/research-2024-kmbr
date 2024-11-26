@@ -34,7 +34,7 @@ public class SimulationApp {
         double[] stdLimits = {1.5, 2.5};
 //        double[] stdLimits = {2.0, 2.5};
 
-        double[] pointGenerationClusterProbs = db.pointFactory.getRandomClusterProbabilities(Config.NUM_OF_GROUPS);
+        double[] pointGenerationClusterProbs = db.pointFactory.getRandomClusterProbabilities(Config.NUM_OF_GROUPS, 10.0);
 
         long startTime = System.currentTimeMillis();
         ClusterAssignment[] clusterAssignments = db.generateRandomPoints(
