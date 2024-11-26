@@ -111,6 +111,6 @@ INPUT> exit # exit.
 ```
 
 ## Reference
-[1] Segal, Michael, and Klara Kedem. "Enclosing k points in the smallest axis parallel rectangle." Information Processing Letters 65.2 (1998): 95-99.
-[2] Chan, Timothy M., and Sariel Har-Peled. "Smallest k-enclosing rectangle revisited." Discrete & Computational Geometry 66.2 (2021): 769-791.
+[1] Segal, Michael, and Klara Kedem. "Enclosing k points in the smallest axis parallel rectangle." Information Processing Letters 65.2 (1998): 95-99. <br/>
+[2] Chan, Timothy M., and Sariel Har-Peled. "Smallest k-enclosing rectangle revisited." Discrete & Computational Geometry 66.2 (2021): 769-791. <br/>
 [3] Aggarwal, Alok, et al. "Finding k points with minimum diameter and related problems." Journal of algorithms 12.1 (1991): 38-56.
