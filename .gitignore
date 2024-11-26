@@ -8,3 +8,4 @@ python/simulation/*.jpg
 **/.DS_store
 **/.ipynb_checkpoints/
 **/*_bk.*
+backup/
