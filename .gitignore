@@ -1,5 +1,4 @@
 .idea/
-data/
 target/
 python/simulation/*.jpg
 **/*.gif
@@ -9,3 +8,9 @@ python/simulation/*.jpg
 **/.ipynb_checkpoints/
 **/*_bk.*
 backup/
+**/old/
+data/covid-19-in-the-american-continent/vis/
+data/points/
+data/*.csv
+data/**/*.csv
+data/**/*.txt
