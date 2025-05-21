@@ -179,7 +179,8 @@ public class PointFactory {
 
         int count = 0;
         for (int i = 0; i < numOfCluster; i += 1) {
-            if (count < numOfMajorCluster && random.nextDouble() < 0.1) {
+//            if (count < numOfMajorCluster && random.nextDouble() < 0.1) {
+            if (count < numOfMajorCluster) {
                 clusterProbabilities[i] = random.nextDouble()*amp;
                 count += 1;
             }
@@ -214,8 +215,9 @@ public class PointFactory {
 
         int count = 0;
         for (int i = 0; i < numOfCluster; i += 1) {
-            if (count < numOfMajorCluster && random.nextDouble() < 0.1) {
-                clusterProbabilities[i] = random.nextDouble()*50;
+//            if (count < numOfMajorCluster && random.nextDouble() < 0.1) {
+            if (count < numOfMajorCluster) {
+                clusterProbabilities[i] = random.nextDouble()*20;
                 count += 1;
             }
             else {
