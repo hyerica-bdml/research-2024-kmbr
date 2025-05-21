@@ -685,6 +685,17 @@ public class BinaryTree implements Externalizable {
         System.out.println("\n=====");
     }
 
+    public void printPointSets() {
+        Integer[] pointSetKeys = new Integer[pointSets.size()];
+        pointSets.keySet().toArray(pointSetKeys);
+
+        Arrays.sort(pointSetKeys);
+        for (int key: pointSetKeys) {
+            PointSet pointSet = pointSets.get(key);
+            System.out.printf("Point set %d (size: %d, x min: %f, x max %f)\n", key, pointSet.size(), pointSet.getMinX(), pointSet.getMaxX());
+        }
+    }
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
 

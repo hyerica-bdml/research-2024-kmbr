@@ -79,15 +79,33 @@ public class KMBRFinder implements Externalizable {
             result = computeMBR(0, true);
         }
 
-        return result.getMBR();
+        globalMBR = result.getMBR();
+        return globalMBR;
     }
 
-    public void addPoint(Point p) {
+    public int search(final Point p) {
+        int treeIndex = tree.search(p, 0);
+        return treeIndex;
+    }
+
+    public double getValue(final int treeIndex) {
+        return tree.getValue(treeIndex);
+    }
+
+    public PointSet getPointSet(final int pointSetIndex) {
+        return tree.getPointSet(pointSetIndex);
+    }
+
+    public boolean isLeaf(final int treeIndex) {
+        return tree.isLeaf(treeIndex);
+    }
+
+    public void addPoint(final Point p) {
         int treeIndex = tree.search(p, 0);
         addPoint(p, treeIndex);
     }
 
-    public void addPoint(Point p, int treeIndex) {
+    public void addPoint(final Point p, final int treeIndex) {
         if (Config.useCache) {
             int currentTreeIndex = treeIndex;
             while (currentTreeIndex > -1) {
@@ -110,6 +128,7 @@ public class KMBRFinder implements Externalizable {
 //            double alphaForOriginalPointSet = alphas.get(originalPointSetIndex) + 1;
             double alphaForOriginalPointSet = alphas.get(originalPointSetIndex);
             alphaForOriginalPointSet += (alphaPlusBeta - alphaForOriginalPointSet)/10;
+//            alphaForOriginalPointSet += (alphaPlusBeta - alphaForOriginalPointSet)/2;
             alphas.put(originalPointSetIndex, alphaForOriginalPointSet);
             if (newPointSetIndex >= 0) {
                 alphas.put(newPointSetIndex, alphaForOriginalPointSet);
@@ -244,9 +263,12 @@ public class KMBRFinder implements Externalizable {
 
     public void printDirtyProbs() {
         Map<Integer, PointSet> pointSets = tree.getPointSets();
+        List<Integer> keySet = new ArrayList<>(pointSets.keySet());
+
+        keySet.sort((k1, k2) -> Double.compare(getDirtyProbability(k1), getDirtyProbability(k2)));
 
         System.out.println("===== PointSets =====");
-        for (int key: pointSets.keySet()) {
+        for (int key: keySet) {
             System.out.println(String.format("Dirty probability of PointSet %d: %f", key, getDirtyProbability(key), alphas.get(key)));
         }
         System.out.println("alpha + beta: " + alphaPlusBeta);
@@ -366,6 +388,45 @@ public class KMBRFinder implements Externalizable {
 
     public void printHeights(final int treeIndex) {
         tree.printHeights(treeIndex);
+    }
+
+    public void printPointSets() {
+        tree.printPointSets();
+    }
+
+    public void printCacheMemory() {
+        printCacheMemory("basic");
+    }
+
+    public void printCacheMemory(String type) {
+        int[] numOfPointsInEachNode = new int[tree.treeSize()];
+        long numOfBytes = 0;
+
+        for (int currentNodeIndex = tree.treeSize() - 1; currentNodeIndex >= 0; currentNodeIndex -= 1) {
+            if (tree.exists(currentNodeIndex)) {
+                if (tree.isLeaf(currentNodeIndex)) {
+                    int pointSetIndex = (int) tree.getValue(currentNodeIndex);
+                    numOfPointsInEachNode[currentNodeIndex] = tree.getPointSet(pointSetIndex).size();
+                } else {
+                    int leftChildIndex = tree.getLeftChild(currentNodeIndex);
+                    int rightChildIndex = tree.getRightChild(currentNodeIndex);
+
+                    numOfPointsInEachNode[currentNodeIndex] = 0;
+
+                    if (tree.exists(leftChildIndex))
+                        numOfPointsInEachNode[currentNodeIndex] += numOfPointsInEachNode[leftChildIndex];
+                    if (tree.exists(rightChildIndex))
+                        numOfPointsInEachNode[currentNodeIndex] += numOfPointsInEachNode[rightChildIndex];
+
+                    if (type.equals("all") || (mbrCache.size() > currentNodeIndex) && mbrCache.get(currentNodeIndex) != null) {
+                        numOfBytes += 16L * 2 * numOfPointsInEachNode[currentNodeIndex];
+                    }
+                }
+            }
+        }
+
+        double memory = (double) numOfBytes / Math.pow(2, 20);
+        System.out.printf("Memory consumption of caching: %f MB (%d bytes)\n", memory, numOfBytes);
     }
 
     public int getNumOfPoints() {

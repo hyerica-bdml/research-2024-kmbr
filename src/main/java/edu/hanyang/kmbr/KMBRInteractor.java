@@ -2,6 +2,7 @@ package edu.hanyang.kmbr;
 
 import edu.hanyang.kmbr.database.DatabaseInteractor;
 import edu.hanyang.kmbr.domain.Point;
+import edu.hanyang.kmbr.domain.PointSet;
 import edu.hanyang.kmbr.utils.MBR;
 
 public class KMBRInteractor {
@@ -34,6 +35,22 @@ public class KMBRInteractor {
 
     public int treeSize() {
         return finder.treeSize();
+    }
+
+    public int search(final Point p) {
+        return finder.search(p);
+    }
+
+    public double getValue(final int treeIndex) {
+        return finder.getValue(treeIndex);
+    }
+
+    public PointSet getPointSet(final int pointSetIndex) {
+        return finder.getPointSet(pointSetIndex);
+    }
+
+    public boolean isLeaf(final int treeIndex) {
+        return finder.isLeaf(treeIndex);
     }
 
     public void updateCacheBits() {
@@ -78,6 +95,18 @@ public class KMBRInteractor {
 
     public void printCache() {
         finder.printCache();
+    }
+
+    public void printPointSets() {
+        finder.printPointSets();
+    }
+
+    public void printCacheMemory() {
+        finder.printCacheMemory();
+    }
+
+    public void printCacheMemory(String type) {
+        finder.printCacheMemory(type);
     }
 
     public int getNumOfPoints() {

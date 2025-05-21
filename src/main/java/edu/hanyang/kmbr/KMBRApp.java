@@ -48,6 +48,14 @@ public class KMBRApp {
                             kmbr.printDirtyProbs();
                         else if (parsedInput[1].equals("cache"))
                             kmbr.printCache();
+                        else if (parsedInput[1].equals("k"))
+                            System.out.println(Config.K);
+                        else if (parsedInput[1].equals("pointsets"))
+                            kmbr.printPointSets();
+                        else if (parsedInput[1].equals("cachememory"))
+                            kmbr.printCacheMemory();
+                        else if (parsedInput[1].equals("allcachememory"))
+                            kmbr.printCacheMemory("all");
 
                     } else if (parsedInput[0].equals("insert")) {
                         if (parsedInput[1].equals("one")) {
