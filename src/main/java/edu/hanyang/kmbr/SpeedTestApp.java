@@ -63,7 +63,12 @@ public class SpeedTestApp {
         kmbr.updateCacheBits();
 
         double[] moveClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
-//
+
+       int minMove = 1000;
+       int maxMove = 2000;
+       pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
+       kmbr.updateCacheBits();
+
         try (FileWriter fout = new FileWriter("logs/ours/without_caching.csv", true);
              BufferedWriter bout = new BufferedWriter(fout)) {
 
@@ -77,12 +82,6 @@ public class SpeedTestApp {
         } catch (IOException exc) {
             exc.printStackTrace();
         }
-
-       int minMove = 1000;
-       int maxMove = 2000;
-       pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
-       kmbr.updateCacheBits();
-       kmbr.find();
 
        minMove = 50;
        maxMove = 100;
