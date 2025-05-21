@@ -3,6 +3,7 @@ package edu.hanyang.kmbr;
 import edu.hanyang.kmbr.database.DatabaseInteractor;
 import edu.hanyang.kmbr.domain.ClusterAssignment;
 import edu.hanyang.kmbr.domain.Point;
+import edu.hanyang.kmbr.domain.PointSet;
 import edu.hanyang.kmbr.utils.DataWriter;
 import edu.hanyang.kmbr.utils.EventType;
 import edu.hanyang.kmbr.utils.Utilities;
@@ -43,11 +44,22 @@ public class PointManipulator {
 
             Point p = assignment.getPoint();
 
-            double x = p.getX() + random.nextGaussian()/points.length*50.0 + random.nextDouble()*1e-6;
-            double y = p.getY() + random.nextGaussian()/points.length*50.0 + random.nextDouble()*1e-6;
+//            double x = p.getX() + random.nextGaussian()/points.length*50.0 + random.nextDouble()*1e-6;
+//            double y = p.getY() + random.nextGaussian()/points.length*50.0 + random.nextDouble()*1e-6;
+
+//            int treeIndex = kmbr.search(p);
+//            int pointSetIndex = (int) kmbr.getValue(treeIndex);
+//            System.out.println("BEFORE: " + p.getX() + ", " + p.getY() + ", in PointSet " + pointSetIndex);
+
+            double x = p.getX() + random.nextGaussian()/Math.sqrt(points.length*100);
+            double y = p.getY() + random.nextGaussian()/Math.sqrt(points.length*100);
 
 //            System.out.println("POINT MOVE " + p.getId() + ": " + p.getX());
             movePoint(p, x, y);
+
+//            treeIndex = kmbr.search(p);
+//            pointSetIndex = (int) kmbr.getValue(treeIndex);
+//            System.out.println("AFTER: " + p.getX() + ", " + p.getY() + ", in PointSet " + pointSetIndex);
         }
     }
 
