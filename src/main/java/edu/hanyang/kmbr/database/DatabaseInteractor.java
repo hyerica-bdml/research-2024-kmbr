@@ -31,7 +31,18 @@ public class DatabaseInteractor {
     }
 
     public double[] getRandomClusterProbs(final int numOfClusters) {
-        return pointFactory.getRandomClusterProbabilities(numOfClusters);
+        return pointFactory.getRandomClusterProbabilities(numOfClusters, 0, 1.0);
+    }
+
+    public double[] getRandomClusterProbs(final int numOfClusters,
+                                          final int numOfMajorCluster) {
+        return pointFactory.getRandomClusterProbabilities(numOfClusters, numOfMajorCluster, 1.0);
+    }
+
+    public double[] getRandomClusterProbs(final int numOfClusters,
+                                          final int numOfMajorCluster,
+                                          final double temperature) {
+        return pointFactory.getRandomClusterProbabilities(numOfClusters, numOfMajorCluster, temperature);
     }
 
     public ClusterAssignment[] generateRandomPoints(final int numOfPoints,

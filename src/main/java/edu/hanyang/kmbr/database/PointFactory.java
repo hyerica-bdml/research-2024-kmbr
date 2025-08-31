@@ -205,30 +205,27 @@ public class PointFactory {
     }
 
     public double[] getRandomClusterProbabilities(final int numOfCluster) {
+        return getRandomClusterProbabilities(numOfCluster, 0, 1.0);
+    }
+
+    public double[] getRandomClusterProbabilities(final int numOfCluster,
+                                                  final int numOfMajorCluster) {
+        return getRandomClusterProbabilities(numOfCluster, numOfMajorCluster, 1.0);
+    }
+
+    public double[] getRandomClusterProbabilities(final int numOfCluster,
+                                                  final int numOfMajorCluster,
+                                                  final double temperature) {
         double[] clusterProbabilities = new double[numOfCluster];
         Random random = new Random(System.currentTimeMillis());
 
-        int numOfMajorCluster = 1;
-        if (numOfCluster > 10)
-            numOfMajorCluster = random.nextInt((int) Math.ceil(numOfCluster*0.1) - 1) + 1;
-//        System.out.println(numOfMajorCluster);
-
-        int count = 0;
         for (int i = 0; i < numOfCluster; i += 1) {
 //            if (count < numOfMajorCluster && random.nextDouble() < 0.1) {
-            if (count < numOfMajorCluster) {
-                clusterProbabilities[i] = random.nextDouble()*20;
-                count += 1;
-            }
-            else {
-                clusterProbabilities[i] = random.nextDouble();
-            }
+            if (i < numOfMajorCluster)
+                clusterProbabilities[i] = Math.exp((random.nextDouble() + 1.0) / temperature);
+            else
+                clusterProbabilities[i] = Math.exp(random.nextDouble() / temperature);
         }
-
-//        for (int i = 0; i < numOfMajorCluster; i += 1)
-//            clusterProbabilities[i] = random.nextDouble()*100;
-//        for (int i = numOfMajorCluster; i < numOfCluster; i += 1)
-//            clusterProbabilities[i] = random.nextDouble();
 
         double sum = 0;
         for (int i = 0; i < numOfCluster; i += 1)
@@ -239,6 +236,38 @@ public class PointFactory {
 
         return clusterProbabilities;
     }
+
+//    public double[] getRandomClusterProbabilities(final int numOfCluster) {
+//        double[] clusterProbabilities = new double[numOfCluster];
+//        Random random = new Random(System.currentTimeMillis());
+//
+//        int numOfMajorCluster = 1;
+//        if (numOfCluster > 10)
+//            numOfMajorCluster = random.nextInt((int) Math.ceil(numOfCluster*0.1) - 1) + 1;
+//        System.out.println(numOfMajorCluster);
+//
+//        for (int i = 0; i < numOfCluster; i += 1) {
+////            if (count < numOfMajorCluster && random.nextDouble() < 0.1) {
+//            if (i < numOfMajorCluster)
+//                clusterProbabilities[i] = random.nextDouble()*20;
+//            else
+//                clusterProbabilities[i] = random.nextDouble();
+//        }
+//
+////        for (int i = 0; i < numOfMajorCluster; i += 1)
+////            clusterProbabilities[i] = random.nextDouble()*100;
+////        for (int i = numOfMajorCluster; i < numOfCluster; i += 1)
+////            clusterProbabilities[i] = random.nextDouble();
+//
+//        double sum = 0;
+//        for (int i = 0; i < numOfCluster; i += 1)
+//            sum += clusterProbabilities[i];
+//
+//        for (int i = 0; i < numOfCluster; i += 1)
+//            clusterProbabilities[i] /= sum;
+//
+//        return clusterProbabilities;
+//    }
 
     public double[] getClusterCDF(double[] clusterProbs) {
         double acc = 0.0;

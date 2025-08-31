@@ -42,7 +42,8 @@ public class SpeedTestApp {
         double[] yLimits = {10.0, 100.0};
         double[] stdLimits = {1.5, 4.5};
 
-        double[] pointGenerationClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
+//        double[] clusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS, Config.NUM_OF_GROUPS / 10, 0.2);
+        double[] clusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
 
         ClusterAssignment[] clusterAssignments = db.generateRandomPoints(
                 Config.NUM_OF_POINTS,
@@ -50,7 +51,7 @@ public class SpeedTestApp {
                 xLimits,
                 yLimits,
                 stdLimits,
-                pointGenerationClusterProbs
+                clusterProbs
         );
 
         Point[] points = new Point[clusterAssignments.length];
@@ -62,41 +63,36 @@ public class SpeedTestApp {
         kmbr.createFinder(points);
         kmbr.updateCacheBits();
 
-        double[] moveClusterProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS);
+        String logFilePath = System.getenv().getOrDefault("LOG_FILE", "logs/ours/log.txt");
+        int numDynamicIterations = Integer.parseInt(System.getenv().getOrDefault("NUM_DYNAMIC_ITERATIONS", "30"));
+        int minMove = Integer.parseInt(System.getenv().getOrDefault("MIN_MOVE", "50"));
+        int maxMove = Integer.parseInt(System.getenv().getOrDefault("MAX_MOVE", "100"));
+        boolean runOnDynamic = Boolean.parseBoolean(System.getenv().getOrDefault("RUN_ON_DYNAMIC", "true"));
 
-       int minMove = 1000;
-       int maxMove = 2000;
-       pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
-       kmbr.updateCacheBits();
+        if (!runOnDynamic) numDynamicIterations = 1;
 
-        try (FileWriter fout = new FileWriter("logs/ours/without_caching.csv", true);
+        double[] moveProbs = db.getRandomClusterProbs(Config.NUM_OF_GROUPS, Config.NUM_OF_GROUPS / 10, 0.2);
+
+        try (FileWriter fout = new FileWriter(logFilePath, true);
              BufferedWriter bout = new BufferedWriter(fout)) {
 
-            long startTime = System.currentTimeMillis();
-            // This computation is "without cache" since it is the first run.
-            MBR mbr = kmbr.find();
-            double runtime = (System.currentTimeMillis() - startTime)/1000.0;
-            bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
-            System.out.println("(Without cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
+            for (int i = 0; i < numDynamicIterations; i += 1) {
+                long startTime = System.currentTimeMillis();
+                MBR mbr = kmbr.find();
+                double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
+                bout.write(i + "," + Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
 
+                if (i == 0)
+                    System.out.print("(Without caching) ");
+                else
+                    System.out.print("(With caching) ");
+                System.out.println("Runtime: " + runtime + ", MBR size: " + mbr.size());
+
+                pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveProbs);
+                kmbr.updateCacheBits();
+            }
         } catch (IOException exc) {
             exc.printStackTrace();
         }
-
-       minMove = 50;
-       maxMove = 100;
-       pointManipulator.moveRandomPoints(clusterAssignments, minMove, maxMove, moveClusterProbs);
-       kmbr.updateCacheBits();
-
-       try (FileWriter fout = new FileWriter("logs/ours/with_caching.csv", true);
-            BufferedWriter bout = new BufferedWriter(fout)) {
-           long startTime = System.currentTimeMillis();
-           MBR mbr = kmbr.find();
-           double runtime = (System.currentTimeMillis() - startTime) / 1000.0;
-           bout.write(Config.K + "," + Config.NUM_OF_POINTS + "," + runtime + "\n");
-           System.out.println("(With cache) Runtime: " + runtime + ", MBR size: " + mbr.size());
-       } catch (IOException exc) {
-           exc.printStackTrace();
-       }
     }
 }
